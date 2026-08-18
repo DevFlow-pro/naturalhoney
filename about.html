@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пасека — Натуральный мёд</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .section-title {
+            margin: 40px 0 20px 0;
+            color: #713f12;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #fef08a;
+            font-size: 24px;
+        }
+        .info-card img {
+            width: 100%;
+            aspect-ratio: 600 / 650;
+            object-fit: cover;
+        }
+        .to-top-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: #ca8a04;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4);
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 998;
+        }
+        .to-top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .to-top-btn:hover {
+            background: #a16207;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <header>
+            <div class="header-top">
+                <div class="header-center-brand">
+                    <span class="header-emoji">🍯</span>
+                    <a href="index.html" class="site-title">Натуральный мёд</a>
+                </div>
+                <div class="header-right-action">
+                    <div class="fav-btn-wrapper">
+                        <button id="favorites-toggle-btn" class="fav-icon-btn" title="Избранные заказы">
+                            🔖 <span id="fav-badge" class="fav-badge hidden">0</span>
+                        </button>
+                        <span class="fav-label-sub">избранное</span>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Мед</a></li>
+                    <li><a href="about.html" class="active">Пасека</a></li>
+                    <li><a href="contact.html">Контакты и отзывы</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <h1 class="page-heading">Наша пасека</h1>
+
+            <div class="honey-grid">
+                <article class="info-card">
+                    <img src="apiary.jpeg" alt="Мобильная пасека и производство">
+                    <h3>Мобильная пасека и производство</h3>
+                    <p>Наша пасека — это современное хозяйство «на колёсах». Мы используем мобильный пчелопавильон, который позволяет перевозить ульи вслед за самым пышным цветением. 42 сильные, здоровые пчелиные семьи ежедневно трудятся, чтобы давать стабильный, 100% натуральный продукт. А благодаря современной медогонке откачка мёда происходит быстро, бережно и с соблюдением всех гигиенических стандартов, сохраняя каждую каплю пользы.</p>
+                </article>
+                <article class="info-card">
+                    <img src="mountains.jpeg" alt="Горная пасека (Тянь-Шань)">
+                    <h3>Горная пасека (Тянь-Шань)</h3>
+                    <p>Наша пасека стоит прямо среди бархатных зелёных холмов Тянь-Шаня в районе Кастека. Здесь чистый воздух наполнен ароматами цветущих трав и свежестью горного родника, протекающего неподалёку. Первозданная природа, чистейшая вода и удалённость от городов делают этот уголок идеальным домом для наших пчёл.</p>
+                </article>
+                <article class="info-card">
+                    <img src="flowers.jpeg" alt="Медоносы (Цветы и травы)">
+                    <h3>Медоносы (Цветы и травы)</h3>
+                    <p>Богатство вкуса нашего мёда — это заслуга уникальной флоры горных лугов и степей. Наши пчёлы собирают нектар с ароматного шалфея, горной душицы (алтайского духа), дикой освежающей мяты, целебного зверобоя и первых весенних одуванчиков. Это не просто мёд, а природный концентрат пользы и аромата диких медоносов Казахстана.</p>
+                </article>
+                <article class="info-card">
+                    <img src="steppe.jpeg" alt="Казахстанская степь">
+                    <h3>Казахстанская степь</h3>
+                    <p>Бесконечные просторы, золотое солнце и вольный ветер — степи Казахстана обладают особой, величием дышащей красотой. Наш мёд впитывает всю силу этой родной земли, где под небом до самого горизонта цветут подсолнухи и степные травы. Покупая этот мёд, вы пробуете настоящий, щедрый и богатый вкус нашей Родины.</p>
+                </article>
+            </div>
+        </main>
+
+        <button id="toTopBtn" class="to-top-btn">↑</button>
+
+        <footer>
+            <p>&copy; 2026 Экспериментальный сайт о мёде. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <div id="favorites-popup" class="cart-popup hidden">
+        <div class="cart-popup-header"><h3>🔖 Ваши сохраненные заказы</h3><button id="close-favorites-popup" class="close-popup-btn">&times;</button></div>
+        <div style="margin-bottom: 12px; display: flex; gap: 8px;"><input type="text" id="fav-name-input" placeholder="Название набора" class="fav-input"><button id="save-current-fav-btn" class="fav-save-btn">Сохранить текущий</button></div>
+        <div id="favorites-popup-items" class="cart-popup-items"></div>
+    </div>
+    <div id="cart-popup" class="cart-popup hidden">
+        <div class="cart-popup-header"><h3>Состав вашего заказа</h3><button id="close-cart-popup" class="close-popup-btn">&times;</button></div>
+        <div id="cart-popup-items" class="cart-popup-items"></div>
+    </div>
+    <div id="order-bar" class="order-bar hidden">
+        <div class="order-bar-content">
+            <div id="order-bar-toggle" class="order-info"><div class="order-title-row"><span class="order-heading">ЗАКАЗ <span class="order-edit-hint">(изменить)</span></span><span class="order-total">Итого: <strong id="bar-total-price">0 ₸</strong></span></div><div id="bar-items-text" class="order-items-preview">пусто</div></div>
+            <button id="whatsapp-send-btn" class="whatsapp-btn" title="Отправить в Ватсап"><span class="wa-text">в Ватсап</span><span class="wa-icon">➔</span></button>
+        </div>
+    </div>
+    <div id="lightbox" class="lightbox-modal"><span class="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" alt="Увеличенное фото"></div>
+
+    <script>
+        const toTopBtn = document.getElementById("toTopBtn");
+        window.onscroll = () => {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                toTopBtn.classList.add("visible");
+            } else {
+                toTopBtn.classList.remove("visible");
+            }
+        };
+        toTopBtn.onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});
+    </script>
+    <script src="cart.js"></script>
+</body>
+</html>
