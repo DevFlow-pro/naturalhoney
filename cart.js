@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             alert(
-                'Заказ успешно сохранен в избранное! 🔖'
+                'Заказ успешно сохранен в избранное! ⭐'
             );
 
         });
