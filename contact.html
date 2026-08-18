@@ -49,12 +49,6 @@
             border: 1px solid #fef08a;
         }
 
-        .phone-label {
-            font-size: 13px;
-            color: #78716c;
-            font-weight: 600;
-        }
-
         .phone-row {
             display: flex;
             align-items: center;
@@ -353,19 +347,9 @@
                         <h2>Контакты</h2>
                         <div class="contact-phones-list">
                             <div class="phone-item">
-                                <span class="phone-label">Основной</span>
                                 <div class="phone-row">
-                                    <a href="tel:+77074242531" class="phone-number">+7 (707) 424-25-31</a>
-                                    <a href="https://wa.me/77074242531" target="_blank" class="wa-mini-btn">
-                                        💬 WhatsApp
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="phone-item">
-                                <span class="phone-label">Запасной</span>
-                                <div class="phone-row">
-                                    <a href="tel:+77005553535" class="phone-number">+7 (700) 555-35-35</a>
-                                    <a href="https://wa.me/77005553535" target="_blank" class="wa-mini-btn">
+                                    <a href="tel:+77002623400" class="phone-number">+7 (700) 262-34-00</a>
+                                    <a href="https://wa.me/77002623400" target="_blank" class="wa-mini-btn">
                                         💬 WhatsApp
                                     </a>
                                 </div>
@@ -500,9 +484,8 @@
                 const data = await response.json();
                 let records = Array.isArray(data.record) ? data.record : [];
                 
-                // Удаляем первый отзыв на уровне кода (фильтруем самый первый или системный элемент по индексу/условию)
                 if (records.length > 0) {
-                    records.shift(); // Удаляем самый первый отзыв из массива
+                    records.shift(); 
                 }
 
                 return records.filter(rev => rev && rev.author && rev.text && rev.sessionId !== 'system');

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const WHATSAPP_NUMBER = '77074242531';
+    const WHATSAPP_NUMBER = '77002623400';
 
     const STORAGE_KEY = 'honey_shop_cart_v2';
     const FAV_STORAGE_KEY = 'honey_shop_favs_v2';
@@ -104,11 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let popupHtml = '';
 
 
-        /*
-         * Обновляем счётчики
-         * непосредственно в карточках товаров
-         */
-
         cards.forEach(card => {
 
             const id = card.dataset.id;
@@ -139,10 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
 
-
-        /*
-         * Формируем содержимое корзины
-         */
 
         getCartItems().forEach(item => {
 
@@ -210,10 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
 
-        /*
-         * Обновляем popup корзины
-         */
-
         if (cartPopupItems) {
 
             cartPopupItems.innerHTML =
@@ -225,10 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        /*
-         * Общая сумма
-         */
-
         if (barTotalPrice) {
 
             barTotalPrice.textContent =
@@ -236,10 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         }
 
-
-        /*
-         * Нижняя панель заказа
-         */
 
         if (totalCount > 0) {
 
@@ -276,10 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFavoritesUI();
 
 
-        /*
-         * Сохраняем корзину
-         */
-
         localStorage.setItem(
             STORAGE_KEY,
             JSON.stringify(cart)
@@ -292,10 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!favBadge) return;
 
-
-        /*
-         * Счётчик избранных заказов
-         */
 
         if (favorites.length > 0) {
 
@@ -379,10 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Кнопки + и - у каждого веса
-     */
-
     cards.forEach(card => {
 
         const id = card.dataset.id;
@@ -406,10 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.querySelector('.minus');
 
 
-            /*
-             * +
-             */
-
             if (plusBtn) {
 
                 plusBtn.addEventListener('click', () => {
@@ -423,10 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
 
-
-            /*
-             * -
-             */
 
             if (minusBtn) {
 
@@ -454,10 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-
-    /*
-     * Кнопки + и - внутри корзины
-     */
 
     function attachPopupListeners() {
 
@@ -517,10 +472,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Избранные заказы
-     */
-
     function attachFavoritesListeners() {
 
         if (!favoritesPopupItems) return;
@@ -532,10 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const delBtns =
             favoritesPopupItems.querySelectorAll('.fav-del-btn');
 
-
-        /*
-         * Загрузить заказ
-         */
 
         loadBtns.forEach(btn => {
 
@@ -557,10 +504,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
 
-
-        /*
-         * Удалить сохранённый заказ
-         */
 
         delBtns.forEach(btn => {
 
@@ -588,10 +531,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Открытие корзины
-     */
-
     if (orderBarToggle && cartPopup) {
 
         orderBarToggle.addEventListener('click', () => {
@@ -609,10 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Закрытие корзины
-     */
-
     if (closePopupBtn && cartPopup) {
 
         closePopupBtn.addEventListener('click', () => {
@@ -623,10 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-
-    /*
-     * Открытие избранного
-     */
 
     if (favoritesToggleBtn && favoritesPopup) {
 
@@ -645,10 +576,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Закрытие избранного
-     */
-
     if (closeFavoritesPopup && favoritesPopup) {
 
         closeFavoritesPopup.addEventListener('click', () => {
@@ -659,10 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-
-    /*
-     * Сохранение текущей корзины в избранное
-     */
 
     if (saveCurrentFavBtn) {
 
@@ -753,10 +676,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Отправка заказа в WhatsApp
-     */
-
     if (whatsappBtn) {
 
         whatsappBtn.addEventListener('click', () => {
@@ -818,16 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    /*
-     * Первоначальное обновление
-     */
-
     updateUI();
 
-
-    /*
-     * Lightbox
-     */
 
     const lightbox =
         document.getElementById('lightbox');
