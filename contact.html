@@ -484,9 +484,7 @@
                 const data = await response.json();
                 let records = Array.isArray(data.record) ? data.record : [];
                 
-                if (records.length > 0) {
-                    records.shift(); 
-                }
+                // Исправление: убрали records.shift(), чтобы первый отзыв не удалялся автоматически
 
                 return records.filter(rev => rev && rev.author && rev.text && rev.sessionId !== 'system');
             } catch (error) {
