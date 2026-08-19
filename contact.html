@@ -24,6 +24,20 @@
             gap: 20px;
         }
 
+        /* Стиль для новой надписи */
+        .contact-hint {
+            background: #fffbeb;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #fef08a;
+            color: #713f12;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 25px;
+            display: block;
+        }
+
         .contact-section h2 {
             color: #713f12;
             font-size: 20px;
@@ -340,6 +354,7 @@
 
         <main>
             <h1 class="page-heading">Контакты</h1>
+            <span class="contact-hint">По поводу адреса или доставки обращайтесь в WhatsApp</span>
             
             <div class="contacts-grid">
                 <div class="contact-info-card">
@@ -483,9 +498,6 @@
                 });
                 const data = await response.json();
                 let records = Array.isArray(data.record) ? data.record : [];
-                
-                // Исправление: убрали records.shift(), чтобы первый отзыв не удалялся автоматически
-
                 return records.filter(rev => rev && rev.author && rev.text && rev.sessionId !== 'system');
             } catch (error) {
                 console.error("Ошибка загрузки отзывов:", error);
