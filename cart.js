@@ -31,6 +31,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const favBadge = document.getElementById('fav-badge');
 
 
+    // Создание модального окна проверки заказа с затемнением фона и кнопкой сохранения в избранное
+    const orderConfirmModal = document.createElement('div');
+    orderConfirmModal.id = 'order-confirm-modal';
+    orderConfirmModal.className = 'cart-popup';
+    orderConfirmModal.style.zIndex = '2000';
+    orderConfirmModal.innerHTML = `
+        <div class="cart-popup-header">
+            <h3>✨ Точно ли вы заказали это?</h3>
+            <button id="close-confirm-modal" class="close-popup-btn">&times;</button>
+        </div>
+        <p style="font-size: 13px; color: #78716c; margin-bottom: 12px;">Проверьте ваш заказ, при необходимости измените количество или сохраните в избранное:</p>
+        <div id="confirm-modal-items" class="cart-popup-items" style="margin-bottom: 15px;"></div>
+        
+        <div style="margin-bottom: 15px; display: flex; gap: 8px; align-items: center; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px solid #fef08a;">
+            <input type="text" id="confirm-fav-name-input" placeholder="Название набора для избранного" class="fav-input" style="background: #fff;">
+            <button id="confirm-save-fav-btn" class="fav-save-btn" style="white-space: nowrap;">🔖 В избранное</button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #fef08a; padding-top: 10px;">
+            <span style="font-size: 15px; font-weight: 700; color: #713f12;">Итого: <strong id="confirm-total-price" style="color: #ca8a04;">0 ₸</strong></span>
+            <button id="confirm-whatsapp-final-btn" class="whatsapp-btn" style="padding: 10px 20px;">
+                <span class="wa-text">Отправить в WhatsApp</span>
+                <span class="wa-icon">➔</span>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(orderConfirmModal);
+
+    // Создание подложки для затемнения фона (backdrop)
+    const modalBackdrop = document.createElement('div');
+    modalBackdrop.id = 'modal-backdrop';
+    modalBackdrop.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1999;
+        display: none;
+        transition: opacity 0.3s ease;
+    `;
+    document.body.appendChild(modalBackdrop);
+
+    const closeConfirmModalBtn = document.getElementById('close-confirm-modal');
+    const confirmModalItems = document.getElementById('confirm-modal-items');
+    const confirmTotalPrice = document.getElementById('confirm-total-price');
+    const confirmWhatsappFinalBtn = document.getElementById('confirm-whatsapp-final-btn');
+    const confirmFavNameInput = document.getElementById('confirm-fav-name-input');
+    const confirmSaveFavBtn = document.getElementById('confirm-save-fav-btn');
+
+
     function formatWeight(weight) {
 
         return weight === '1.5'
@@ -249,10 +299,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
 
+            closeOrderConfirmModal();
+
         }
 
 
         updateFavoritesUI();
+
+        if (orderConfirmModal.classList.contains('active')) {
+            updateConfirmModalContent();
+        }
 
 
         localStorage.setItem(
@@ -472,6 +528,120 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // Функции для модального окна проверки заказа
+    function openOrderConfirmModal() {
+        const cartItems = getCartItems();
+        if (cartItems.length === 0) {
+            alert('Корзина пуста!');
+            return;
+        }
+        if (cartPopup) cartPopup.classList.remove('active');
+        if (favoritesPopup) favoritesPopup.classList.remove('active');
+
+        updateConfirmModalContent();
+        modalBackdrop.style.display = 'block';
+        orderConfirmModal.classList.add('active');
+    }
+
+    function closeOrderConfirmModal() {
+        orderConfirmModal.classList.remove('active');
+        modalBackdrop.style.display = 'none';
+    }
+
+    function updateConfirmModalContent() {
+        const cartItems = getCartItems();
+        let html = '';
+        let totalSum = 0;
+
+        if (cartItems.length === 0) {
+            closeOrderConfirmModal();
+            return;
+        }
+
+        cartItems.forEach(item => {
+            const itemSum = item.price * item.qty;
+            totalSum += itemSum;
+            html += `
+                <div class="popup-item-row">
+                    <div class="popup-item-info">
+                        <span class="popup-item-name">${item.name}</span>
+                        <span class="popup-item-price">
+                            ${formatWeight(item.weight)} — ${item.price} ₸ × ${item.qty} = <strong>${itemSum} ₸</strong>
+                        </span>
+                    </div>
+                    <div class="popup-item-controls">
+                        <div class="counter-box">
+                            <button class="cnt-btn confirm-minus" data-key="${item.key}">-</button>
+                            <span class="cnt-value">${item.qty}</span>
+                            <button class="cnt-btn confirm-plus" data-key="${item.key}">+</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        confirmModalItems.innerHTML = html;
+        confirmTotalPrice.textContent = totalSum + ' ₸';
+
+        confirmModalItems.querySelectorAll('.confirm-plus').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                cart[key] = (cart[key] || 0) + 1;
+                updateUI();
+            });
+        });
+
+        confirmModalItems.querySelectorAll('.confirm-minus').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.key;
+                if (cart[key] > 0) {
+                    cart[key]--;
+                    if (cart[key] === 0) delete cart[key];
+                    updateUI();
+                }
+            });
+        });
+    }
+
+
+    if (closeConfirmModalBtn) {
+        closeConfirmModalBtn.addEventListener('click', closeOrderConfirmModal);
+    }
+    modalBackdrop.addEventListener('click', closeOrderConfirmModal);
+
+
+    // Сохранение в избранное прямо из окна проверки заказа
+    if (confirmSaveFavBtn) {
+        confirmSaveFavBtn.addEventListener('click', () => {
+            const cartItems = getCartItems();
+            if (cartItems.length === 0) {
+                alert('Корзина пуста!');
+                return;
+            }
+
+            let customName = confirmFavNameInput.value.trim();
+            if (!customName) {
+                customName = `Набор #${favorites.length + 1}`;
+            }
+
+            const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const summaryArr = cartItems.map(item => `${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
+
+            favorites.push({
+                name: customName,
+                summary: summaryArr.join(', '),
+                total: totalSum,
+                cartData: { ...cart }
+            });
+
+            localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(favorites));
+            confirmFavNameInput.value = '';
+            updateFavoritesUI();
+            alert('Заказ успешно сохранен в избранное! ⭐');
+        });
+    }
+
+
     function attachFavoritesListeners() {
 
         if (!favoritesPopupItems) return;
@@ -676,62 +846,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    if (whatsappBtn) {
-
-        whatsappBtn.addEventListener('click', () => {
-
-            const cartItems =
-                getCartItems();
-
-
+    // Итоговая отправка в WhatsApp из модального окна проверки
+    if (confirmWhatsappFinalBtn) {
+        confirmWhatsappFinalBtn.addEventListener('click', () => {
+            const cartItems = getCartItems();
             if (cartItems.length === 0) {
-
                 alert('Корзина пуста!');
-
                 return;
-
             }
 
-
-            let message =
-                "Здравствуйте! Хочу сделать заказ:\n\n";
-
-
+            let message = "Здравствуйте! Хочу сделать заказ:\n\n";
             let totalSum = 0;
 
-
             cartItems.forEach(item => {
-
-                const sum =
-                    item.price * item.qty;
-
-
+                const sum = item.price * item.qty;
                 totalSum += sum;
-
-
-                message +=
-                    `▪️ ${item.name} — ${formatWeight(item.weight)}, ${item.qty} шт. (${sum} ₸)\n`;
-
+                message += `▪️ ${item.name} — ${formatWeight(item.weight)}, ${item.qty} шт. (${sum} ₸)\n`;
             });
 
+            message += `\n📦 Итого к оплате: ${totalSum} ₸`;
 
-            message +=
-                `\n📦 Итого к оплате: ${totalSum} ₸`;
+            const encodedMessage = encodeURIComponent(message);
+            const waURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-
-            const encodedMessage =
-                encodeURIComponent(message);
-
-
-            const waURL =
-                `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            closeOrderConfirmModal();
+            window.open(waURL, '_blank');
+        });
+    }
 
 
-            window.open(
-                waURL,
-                '_blank'
-            );
+    /*
+     * Перехватываем клик по кнопке отправки в WhatsApp:
+     * вместо прямой отправки теперь открывается модальное окно проверки заказа с затемнением фона.
+     */
+    if (whatsappBtn) {
 
+        whatsappBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openOrderConfirmModal();
         });
 
     }
