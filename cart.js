@@ -38,18 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
     orderConfirmModal.style.zIndex = '2000';
     orderConfirmModal.innerHTML = `
         <div class="cart-popup-header">
-            <h3>✨ Точно ли вы заказали это?</h3>
+            <h3>Детали заказа</h3>
             <button id="close-confirm-modal" class="close-popup-btn">&times;</button>
         </div>
         <p style="font-size: 13px; color: #78716c; margin-bottom: 12px;">Проверьте ваш заказ, при необходимости измените количество или сохраните в избранное:</p>
         <div id="confirm-modal-items" class="cart-popup-items" style="margin-bottom: 15px;"></div>
         
-        <div style="margin-bottom: 15px; display: flex; gap: 8px; align-items: center; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px solid #fef08a;">
-            <input type="text" id="confirm-fav-name-input" placeholder="Название набора для избранного" class="fav-input" style="background: #fff;">
-            <button id="confirm-save-fav-btn" class="fav-save-btn" style="white-space: nowrap;">🔖 В избранное</button>
+        <div style="margin-bottom: 15px; display: flex; gap: 8px; align-items: center; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px solid #fef08a; flex-wrap: wrap;">
+            <input type="text" id="confirm-fav-name-input" placeholder="Название набора" class="fav-input" style="background: #fff; min-width: 120px; flex: 1;">
+            <button id="confirm-save-fav-btn" class="fav-save-btn" style="white-space: nowrap; padding: 8px 12px; font-size: 12px;">⭐ Сохранить</button>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #fef08a; padding-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #fef08a; padding-top: 10px; flex-wrap: wrap; gap: 10px;">
             <span style="font-size: 15px; font-weight: 700; color: #713f12;">Итого: <strong id="confirm-total-price" style="color: #ca8a04;">0 ₸</strong></span>
             <button id="confirm-whatsapp-final-btn" class="whatsapp-btn" style="padding: 10px 20px;">
                 <span class="wa-text">Отправить в WhatsApp</span>
