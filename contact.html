@@ -579,7 +579,7 @@
 
     <script src="cart.js"></script>
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxJqP4nBfVzwKeuvFUbsfq1nVCkcKjjM0-2B121R7vLsXpJHHiO9HOOhjdfLLmc7iuFzg/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwvYlOqMA2VQ9zXrx0mYk5KwyPz2HqtLRe7WJEyM4LirjxuxOJCoSmKNlUut_HS6PWeQ/exec";
 
         // МАКСИМАЛЬНО РАСШИРЕННЫЙ АНТИМАТ ФИЛЬТР (русский, казахский, английский маты, упоминания шешен/родственников и оскорбления)
         const badWords = [
@@ -793,7 +793,7 @@
 
             if (!authorInput || !textInput) return;
 
-            // Проверка пароля администратора через имя и текст отзыва (как в старом коде)
+            // Проверка пароля администратора через имя и текст отзыва
             if (authorInput.toLowerCase() === 'admin' && textInput === 'honey123') {
                 localStorage.setItem('is_honey_admin', 'true');
                 alert('Режим администратора успешно активирован на этом устройстве!');
@@ -856,7 +856,8 @@
 
         window.removeReview = async function(rowId, isAdminAction) {
             if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
-                const adminPass = isAdminAction ? 'honey123' : '';
+                const isAdmin = localStorage.getItem('is_honey_admin') === 'true';
+                const adminMarker = isAdmin ? 'honey123' : '';
                 const authorKey = localStorage.getItem('my_review_author') || '';
 
                 try {
@@ -866,7 +867,7 @@
                         body: JSON.stringify({
                             action: 'delete',
                             rowId: rowId,
-                            adminPass: adminPass,
+                            adminMarker: adminMarker,
                             authorKey: authorKey
                         })
                     });
@@ -940,10 +941,11 @@
             try {
                 let bodyData = {};
                 if (mode === 'reply') {
+                    const isAdmin = localStorage.getItem('is_honey_admin') === 'true';
                     bodyData = {
                         action: 'adminReply',
                         rowId: rowId,
-                        adminPass: 'honey123',
+                        adminMarker: isAdmin ? 'honey123' : '',
                         replyText: textVal
                     };
                 } else {
