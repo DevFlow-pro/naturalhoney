@@ -446,46 +446,11 @@ nav a.active::after {
     margin-bottom: 15px;
     border-bottom: 1px solid #fef08a;
     padding-bottom: 10px;
-    gap: 10px;
-    flex-wrap: wrap;
 }
 
 .cart-popup-header h3 {
     font-size: 18px;
     color: #713f12;
-}
-
-/* Обёртка для кнопок в шапке попапа корзины: «Сохранить в избранное» + крестик */
-.cart-popup-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-/* Мини-кнопка «⭐ Сохранить в избранное» в шапке попапа корзины */
-.cart-fav-mini-btn {
-    background: #fffbeb;
-    color: #713f12;
-    border: 1px solid #ca8a04;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    line-height: 1;
-}
-
-.cart-fav-mini-btn:hover {
-    background: #fef9c3;
-    border-color: #a16207;
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(202, 138, 4, 0.2);
 }
 
 .close-popup-btn {
@@ -495,7 +460,6 @@ nav a.active::after {
     color: #78716c;
     cursor: pointer;
     line-height: 1;
-    padding: 0 4px;
 }
 
 .close-popup-btn:hover {
@@ -519,18 +483,6 @@ nav a.active::after {
     font-size: 14px;
     outline: none;
     background: #fffbeb;
-    font-family: inherit;
-    color: #451a03;
-}
-
-.fav-input::placeholder {
-    color: #a8a29e;
-    opacity: 0.7;
-}
-
-.fav-input:focus {
-    border-color: #a16207;
-    box-shadow: 0 0 5px rgba(202, 138, 4, 0.2);
 }
 
 .fav-save-btn {
@@ -543,7 +495,6 @@ nav a.active::after {
     cursor: pointer;
     font-size: 13px;
     transition: var(--transition);
-    white-space: nowrap;
 }
 
 .fav-save-btn:hover {
@@ -559,7 +510,6 @@ nav a.active::after {
     padding: 10px 15px;
     border-radius: 12px;
     border: 1px solid #fef08a;
-    gap: 10px;
 }
 
 .popup-item-info,
@@ -567,7 +517,6 @@ nav a.active::after {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 0;
 }
 
 .popup-item-name,
@@ -575,7 +524,6 @@ nav a.active::after {
     font-weight: 700;
     color: #713f12;
     font-size: 15px;
-    word-break: break-word;
 }
 
 .popup-item-price,
@@ -587,7 +535,6 @@ nav a.active::after {
 .fav-actions {
     display: flex;
     gap: 8px;
-    flex-shrink: 0;
 }
 
 .fav-load-btn {
@@ -909,14 +856,5 @@ footer {
 
     .weight-label {
         font-size: 12px;
-    }
-
-    .cart-fav-mini-btn {
-        font-size: 12px;
-        padding: 5px 10px;
-    }
-
-    .cart-popup-header h3 {
-        font-size: 16px;
     }
 }

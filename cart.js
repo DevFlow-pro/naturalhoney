@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderBarToggle = document.getElementById('order-bar-toggle');
     const closePopupBtn = document.getElementById('close-cart-popup');
     const cartPopupItems = document.getElementById('cart-popup-items');
-    const cartSaveFavBtn = document.getElementById('cart-save-fav-btn');
 
     const favoritesToggleBtn = document.getElementById('favorites-toggle-btn');
     const favoritesPopup = document.getElementById('favorites-popup');
@@ -85,101 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmWhatsappFinalBtn = document.getElementById('confirm-whatsapp-final-btn');
     const confirmFavNameInput = document.getElementById('confirm-fav-name-input');
     const confirmSaveFavBtn = document.getElementById('confirm-save-fav-btn');
-
-
-    // ============================================
-    // Мини-модалка для сохранения в избранное
-    // (открывается из попапа корзины по кнопке «⭐ Сохранить в избранное»)
-    // ============================================
-    const favSaveModal = document.createElement('div');
-    favSaveModal.id = 'fav-save-modal';
-    favSaveModal.className = 'admin-modal';
-    favSaveModal.innerHTML = `
-        <div class="admin-modal-content" style="max-width: 420px;">
-            <h3>⭐ Сохранить в избранное</h3>
-            <p style="font-size: 13px; color: #78716c; margin: 0;">Введите название набора, чтобы легко найти его позже:</p>
-            <input type="text" id="fav-save-modal-input" class="fav-input" placeholder="Название набора" style="background: #fff;">
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" class="action-btn delete-btn" id="close-fav-save-modal" style="background:#6b7280; border-color:#4b5563;">Отмена</button>
-                <button type="button" class="action-btn reply-admin-btn" id="confirm-fav-save-modal">Сохранить</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(favSaveModal);
-
-    const favSaveModalInput = document.getElementById('fav-save-modal-input');
-    const closeFavSaveModalBtn = document.getElementById('close-fav-save-modal');
-    const confirmFavSaveModalBtn = document.getElementById('confirm-fav-save-modal');
-
-    function openFavSaveModal() {
-        const cartItems = getCartItems();
-        if (cartItems.length === 0) {
-            alert('Корзина пуста, нечего сохранять!');
-            return;
-        }
-        favSaveModalInput.value = '';
-        favSaveModal.classList.add('active');
-        setTimeout(() => favSaveModalInput.focus(), 50);
-    }
-
-    function closeFavSaveModal() {
-        favSaveModal.classList.remove('active');
-    }
-
-    function saveCurrentCartToFavorites(customName) {
-        const cartItems = getCartItems();
-        if (cartItems.length === 0) {
-            alert('Корзина пуста, нечего сохранять!');
-            return;
-        }
-
-        const name = (customName || '').trim() || `Набор #${favorites.length + 1}`;
-
-        const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const summaryArr = cartItems.map(item => `${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
-
-        favorites.push({
-            name: name,
-            summary: summaryArr.join(', '),
-            total: totalSum,
-            cartData: { ...cart }
-        });
-
-        localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(favorites));
-        updateFavoritesUI();
-        alert('Заказ успешно сохранен в избранное! ⭐');
-    }
-
-    if (closeFavSaveModalBtn) {
-        closeFavSaveModalBtn.addEventListener('click', closeFavSaveModal);
-    }
-
-    if (confirmFavSaveModalBtn) {
-        confirmFavSaveModalBtn.addEventListener('click', () => {
-            saveCurrentCartToFavorites(favSaveModalInput.value);
-            closeFavSaveModal();
-        });
-    }
-
-    // Enter в поле ввода = сохранить
-    if (favSaveModalInput) {
-        favSaveModalInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                saveCurrentCartToFavorites(favSaveModalInput.value);
-                closeFavSaveModal();
-            }
-        });
-    }
-
-    // Клик по подложке мини-модалки = закрыть
-    if (favSaveModal) {
-        favSaveModal.addEventListener('click', (e) => {
-            if (e.target === favSaveModal) {
-                closeFavSaveModal();
-            }
-        });
-    }
 
 
     function formatWeight(weight) {
@@ -708,9 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeConfirmModalBtn) {
         closeConfirmModalBtn.addEventListener('click', closeOrderConfirmModal);
     }
-    if (modalBackdrop) {
-        modalBackdrop.addEventListener('click', closeOrderConfirmModal);
-    }
+    modalBackdrop.addEventListener('click', closeOrderConfirmModal);
 
 
     // Сохранение в избранное прямо из окна проверки заказа
@@ -773,12 +675,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 updateUI();
 
-                // Если панели заказа нет на этой странице (about/contact) —
-                // подсказываем пользователю, где завершить оформление.
-                if (!orderBar) {
-                    alert('Набор добавлен в корзину! Откройте главную страницу, чтобы оформить заказ.');
-                }
-
             });
 
         });
@@ -832,21 +728,6 @@ document.addEventListener('DOMContentLoaded', () => {
         closePopupBtn.addEventListener('click', () => {
 
             cartPopup.classList.remove('active');
-
-        });
-
-    }
-
-
-    // Кнопка «Сохранить в избранное» прямо в попапе корзины
-    if (cartSaveFavBtn) {
-
-        cartSaveFavBtn.addEventListener('click', (e) => {
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            openFavSaveModal();
 
         });
 
