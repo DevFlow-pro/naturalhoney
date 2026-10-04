@@ -1,9 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const WHATSAPP_NUMBER = '77002623400';
+    // ============================================
+    // УНИКАЛЬНЫЙ ID САЙТА — не меняй без причины!
+    // ============================================
+    const SITE_UNIQUE_ID = 'honey_prod_2026';
 
-    const STORAGE_KEY = 'honey_shop_cart_v2';
-    const FAV_STORAGE_KEY = 'honey_shop_favs_v2';
+    const STORAGE_KEY = `${SITE_UNIQUE_ID}_cart_v1`;
+    const FAV_STORAGE_KEY = `${SITE_UNIQUE_ID}_favs_v1`;
+
+    const WHATSAPP_NUMBER = '77002623400';
 
     let cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     let favorites = JSON.parse(localStorage.getItem(FAV_STORAGE_KEY)) || [];

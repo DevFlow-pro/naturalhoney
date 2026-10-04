@@ -581,6 +581,15 @@
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwvYlOqMA2VQ9zXrx0mYk5KwyPz2HqtLRe7WJEyM4LirjxuxOJCoSmKNlUut_HS6PWeQ/exec";
 
+        // ============================================
+        // УНИКАЛЬНЫЙ ID САЙТА — не меняй без причины!
+        // ============================================
+        const SITE_UNIQUE_ID = 'honey_prod_2026';
+
+        // Уникальные ключи localStorage для этого сайта
+        const LS_REVIEW_AUTHOR_KEY = `${SITE_UNIQUE_ID}_my_review_author`;
+        const LS_IS_ADMIN_KEY = `${SITE_UNIQUE_ID}_is_admin`;
+
         // МАКСИМАЛЬНО РАСШИРЕННЫЙ АНТИМАТ ФИЛЬТР (русский, казахский, английский маты, упоминания шешен/родственников и оскорбления)
         const badWords = [
             // Казахские маты, ругательства и грубые оскорбления (включая шешен и производные)
@@ -639,7 +648,7 @@
         const stars = document.querySelectorAll('#starContainer span');
         const ratingInput = document.getElementById('reviewRating');
 
-        const savedAuthor = localStorage.getItem('my_review_author');
+        const savedAuthor = localStorage.getItem(LS_REVIEW_AUTHOR_KEY);
         if (savedAuthor) {
             document.getElementById('reviewAuthor').value = savedAuthor;
         }
@@ -690,8 +699,8 @@
             const summaryCount = document.getElementById('summaryCount');
             
             const reviews = await fetchReviews();
-            const isAdmin = localStorage.getItem('is_honey_admin') === 'true';
-            const currentAuthor = localStorage.getItem('my_review_author') || '';
+            const isAdmin = localStorage.getItem(LS_IS_ADMIN_KEY) === 'true';
+            const currentAuthor = localStorage.getItem(LS_REVIEW_AUTHOR_KEY) || '';
 
             list.innerHTML = '';
 
@@ -795,7 +804,7 @@
 
             // Проверка пароля администратора через имя и текст отзыва
             if (authorInput.toLowerCase() === 'admin' && textInput === 'honey123') {
-                localStorage.setItem('is_honey_admin', 'true');
+                localStorage.setItem(LS_IS_ADMIN_KEY, 'true');
                 alert('Режим администратора успешно активирован на этом устройстве!');
                 form.reset();
                 ratingInput.value = 5;
@@ -811,7 +820,7 @@
                 profanityErrorBox.style.display = 'none';
             }
 
-            localStorage.setItem('my_review_author', authorInput);
+            localStorage.setItem(LS_REVIEW_AUTHOR_KEY, authorInput);
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
@@ -832,7 +841,7 @@
                 const result = await response.json();
 
                 if (result.status === 'admin_success') {
-                    localStorage.setItem('is_honey_admin', 'true');
+                    localStorage.setItem(LS_IS_ADMIN_KEY, 'true');
                     alert('Режим администратора успешно активирован на этом устройстве!');
                 } else if (result.status === 'success') {
                     alert('Отзыв отправлен! Если он не появился сразу, пожалуйста, обновите страницу.');
@@ -856,9 +865,9 @@
 
         window.removeReview = async function(rowId, isAdminAction) {
             if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
-                const isAdmin = localStorage.getItem('is_honey_admin') === 'true';
+                const isAdmin = localStorage.getItem(LS_IS_ADMIN_KEY) === 'true';
                 const adminMarker = isAdmin ? 'honey123' : '';
-                const authorKey = localStorage.getItem('my_review_author') || '';
+                const authorKey = localStorage.getItem(LS_REVIEW_AUTHOR_KEY) || '';
 
                 try {
                     const response = await fetch(WEB_APP_URL, {
@@ -941,7 +950,7 @@
             try {
                 let bodyData = {};
                 if (mode === 'reply') {
-                    const isAdmin = localStorage.getItem('is_honey_admin') === 'true';
+                    const isAdmin = localStorage.getItem(LS_IS_ADMIN_KEY) === 'true';
                     bodyData = {
                         action: 'adminReply',
                         rowId: rowId,
@@ -952,12 +961,12 @@
                     bodyData = {
                         action: 'editReview',
                         rowId: rowId,
-                        authorKey: localStorage.getItem('my_review_author') || '',
+                        authorKey: localStorage.getItem(LS_REVIEW_AUTHOR_KEY) || '',
                         newAuthor: newAuthorVal,
                         newText: textVal,
                         newRating: parseInt(document.getElementById('editReviewRating').value)
                     };
-                    localStorage.setItem('my_review_author', newAuthorVal);
+                    localStorage.setItem(LS_REVIEW_AUTHOR_KEY, newAuthorVal);
                 }
 
                 const response = await fetch(WEB_APP_URL, {
