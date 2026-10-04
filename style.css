@@ -446,11 +446,20 @@ nav a.active::after {
     margin-bottom: 15px;
     border-bottom: 1px solid #fef08a;
     padding-bottom: 10px;
+    gap: 10px;
 }
 
 .cart-popup-header h3 {
     font-size: 18px;
     color: #713f12;
+    flex-shrink: 0;
+}
+
+.cart-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .close-popup-btn {
@@ -464,6 +473,73 @@ nav a.active::after {
 
 .close-popup-btn:hover {
     color: #451a03;
+}
+
+/* НОВАЯ КНОПКА "СОХРАНИТЬ В ИЗБРАННОЕ" (маленькая, в шапке корзины) */
+.save-to-fav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #facc15;
+    border-radius: 20px;
+    color: #713f12;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(250, 204, 21, 0.2);
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.save-to-fav-btn:hover {
+    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(250, 204, 21, 0.35);
+}
+
+.save-to-fav-btn:active {
+    transform: translateY(0);
+}
+
+/* Панель ввода названия набора - появляется НАД шапкой корзины */
+.save-fav-input-panel {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #fffbeb;
+    border: 1px solid #fef08a;
+    border-radius: 12px;
+    animation: slideDown 0.3s ease;
+}
+
+.save-fav-input-panel.hidden {
+    display: none;
+}
+
+.save-fav-input-panel .fav-input {
+    flex: 1;
+    background: #ffffff;
+}
+
+.save-fav-input-panel .fav-save-btn {
+    padding: 8px 16px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .cart-popup-items {
@@ -789,74 +865,6 @@ footer {
     font-size: 12px;
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ СОХРАНЕНИЯ В ИЗБРАННОЕ ИЗ КОРЗИНЫ */
-.save-to-fav-section {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px dashed #fef08a;
-}
-
-.save-to-fav-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 10px 15px;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border: 1px solid #facc15;
-    border-radius: 12px;
-    color: #713f12;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(250, 204, 21, 0.2);
-}
-
-.save-to-fav-btn:hover {
-    background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
-}
-
-.save-fav-input-panel {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    padding: 10px;
-    background: #fffbeb;
-    border: 1px solid #fef08a;
-    border-radius: 12px;
-    animation: slideDown 0.3s ease;
-}
-
-.save-fav-input-panel.hidden {
-    display: none;
-}
-
-.save-fav-input-panel .fav-input {
-    flex: 1;
-    background: #ffffff;
-}
-
-.save-fav-input-panel .fav-save-btn {
-    padding: 8px 16px;
-    white-space: nowrap;
-    font-size: 13px;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @media (max-width: 768px) {
 
     body {
@@ -924,6 +932,20 @@ footer {
 
     .weight-label {
         font-size: 12px;
+    }
+
+    .cart-popup-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .cart-header-actions {
+        gap: 6px;
+    }
+
+    .save-to-fav-btn {
+        font-size: 11px;
+        padding: 5px 8px;
     }
 
     .save-fav-input-panel {

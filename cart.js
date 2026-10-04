@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveCurrentFavBtn = document.getElementById('save-current-fav-btn');
     const favBadge = document.getElementById('fav-badge');
 
-    // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ СОХРАНЕНИЯ В ИЗБРАННОЕ ПРЯМО ИЗ КОРЗИНЫ
+    // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ СОХРАНЕНИЯ В ИЗБРАННОЕ ИЗ КОРЗИНЫ
     const openSaveFavPanelBtn = document.getElementById('open-save-fav-panel-btn');
     const saveFavInputPanel = document.getElementById('save-fav-input-panel');
     const saveFavNameInput = document.getElementById('save-fav-name-input');
@@ -653,7 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ============================================
-    // НОВАЯ ЛОГИКА: СОХРАНЕНИЕ В ИЗБРАННОЕ ПРЯМО ИЗ КОРЗИНЫ (cart-popup)
+    // СОХРАНЕНИЕ В ИЗБРАННОЕ ПРЯМО ИЗ КОРЗИНЫ (cart-popup)
     // ============================================
     if (openSaveFavPanelBtn && saveFavInputPanel) {
         openSaveFavPanelBtn.addEventListener('click', () => {

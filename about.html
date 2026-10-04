@@ -114,19 +114,28 @@
         <div style="margin-bottom: 12px; display: flex; gap: 8px;"><input type="text" id="fav-name-input" placeholder="Название набора" class="fav-input"><button id="save-current-fav-btn" class="fav-save-btn">Сохранить текущий</button></div>
         <div id="favorites-popup-items" class="cart-popup-items"></div>
     </div>
+
     <div id="cart-popup" class="cart-popup hidden">
-        <div class="cart-popup-header"><h3>Состав вашего заказа</h3><button id="close-cart-popup" class="close-popup-btn">&times;</button></div>
-        <!-- НОВЫЙ БЛОК: Кнопка "Сохранить в избранное" и поле ввода -->
-        <div class="save-to-fav-section">
-            <button id="open-save-fav-panel-btn" class="save-to-fav-btn">⭐ Сохранить в избранное</button>
-            <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
-                <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
-                <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
+
+        <!-- Блок ввода названия набора (изначально скрыт, появляется НАД шапкой) -->
+        <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
+            <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
+            <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
+        </div>
+
+        <div class="cart-popup-header">
+            <h3>Состав вашего заказа</h3>
+            <div class="cart-header-actions">
+                <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">
+                    ⭐ Сохранить в избранное
+                </button>
+                <button id="close-cart-popup" class="close-popup-btn">&times;</button>
             </div>
         </div>
-        <!-- КОНЕЦ НОВОГО БЛОКА -->
+
         <div id="cart-popup-items" class="cart-popup-items"></div>
     </div>
+
     <div id="order-bar" class="order-bar hidden">
         <div class="order-bar-content">
             <div id="order-bar-toggle" class="order-info"><div class="order-title-row"><span class="order-heading">ЗАКАЗ <span class="order-edit-hint">(изменить)</span></span><span class="order-total">Итого: <strong id="bar-total-price">0 ₸</strong></span></div><div id="bar-items-text" class="order-items-preview">пусто</div></div>

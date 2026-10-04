@@ -552,19 +552,23 @@
     </div>
 
     <div id="cart-popup" class="cart-popup hidden">
+
+        <!-- Блок ввода названия набора (изначально скрыт, появляется НАД шапкой) -->
+        <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
+            <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
+            <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
+        </div>
+
         <div class="cart-popup-header">
             <h3>Состав вашего заказа</h3>
-            <button id="close-cart-popup" class="close-popup-btn">&times;</button>
-        </div>
-        <!-- НОВЫЙ БЛОК: Кнопка "Сохранить в избранное" и поле ввода -->
-        <div class="save-to-fav-section">
-            <button id="open-save-fav-panel-btn" class="save-to-fav-btn">⭐ Сохранить в избранное</button>
-            <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
-                <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
-                <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
+            <div class="cart-header-actions">
+                <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">
+                    ⭐ Сохранить в избранное
+                </button>
+                <button id="close-cart-popup" class="close-popup-btn">&times;</button>
             </div>
         </div>
-        <!-- КОНЕЦ НОВОГО БЛОКА -->
+
         <div id="cart-popup-items" class="cart-popup-items"></div>
     </div>
 
