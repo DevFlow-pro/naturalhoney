@@ -442,7 +442,7 @@ nav a.active::after {
 .cart-popup-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 15px;
     border-bottom: 1px solid #fef08a;
     padding-bottom: 10px;
@@ -507,7 +507,7 @@ nav a.active::after {
     transform: translateY(0);
 }
 
-/* Панель ввода названия набора - появляется НАД шапкой корзины */
+/* Панель ввода названия набора - появляется ПОД шапкой корзины, над списком товаров */
 .save-fav-input-panel {
     display: flex;
     gap: 8px;
@@ -941,13 +941,11 @@ footer {
     }
 
     /* === ШАПКА КОРЗИНЫ НА ТЕЛЕФОНЕ === */
-    /* Заголовок и кнопки разбиваем на две строки:
-       первая - заголовок + крестик,
-       вторая - кнопка "Сохранить в избранное" на всю ширину */
+    /* Крестик всегда в правом верхнем углу, кнопка "Сохранить в избранное" под заголовком */
     .cart-popup-header {
         flex-wrap: wrap;
         gap: 8px;
-        align-items: center;
+        align-items: flex-start;
     }
 
     .cart-popup-header h3 {
@@ -955,7 +953,6 @@ footer {
         order: 1;
     }
 
-    /* Крестик остаётся справа от заголовка */
     .cart-header-actions {
         order: 2;
         display: contents;

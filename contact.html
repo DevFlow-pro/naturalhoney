@@ -553,12 +553,6 @@
 
     <div id="cart-popup" class="cart-popup hidden">
 
-        <!-- Блок ввода названия набора (изначально скрыт, появляется НАД шапкой) -->
-        <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
-            <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
-            <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
-        </div>
-
         <div class="cart-popup-header">
             <h3>Состав вашего заказа</h3>
             <div class="cart-header-actions">
@@ -567,6 +561,12 @@
                 </button>
                 <button id="close-cart-popup" class="close-popup-btn">&times;</button>
             </div>
+        </div>
+
+        <!-- Блок ввода названия набора (изначально скрыт, появляется ПОД шапкой, над списком товаров) -->
+        <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
+            <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
+            <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
         </div>
 
         <div id="cart-popup-items" class="cart-popup-items"></div>
