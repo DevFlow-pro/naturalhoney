@@ -24,7 +24,6 @@
             gap: 20px;
         }
 
-        /* Стиль для надписи про WhatsApp */
         .contact-hint {
             background: #fffbeb;
             padding: 10px 15px;
@@ -410,6 +409,37 @@
             animation: fadeIn 0.3s ease;
         }
 
+        /* Плашка статуса отзывов без alert() */
+        .reviews-status-message {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .reviews-status-message.success {
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .reviews-status-message.error {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+        .reviews-status-message .close-status-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: inherit;
+            line-height: 1;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-4px); }
             to { opacity: 1; transform: translateY(0); }
@@ -474,6 +504,9 @@
                     </div>
                 </div>
 
+                <!-- Место для плашки статуса без alert() -->
+                <div id="reviewsStatusContainer"></div>
+
                 <form class="review-form" id="reviewForm">
                     <div class="rating-select-group">
                         <span class="rating-label">Ваша оценка:</span>
@@ -489,7 +522,7 @@
                     <input type="text" id="reviewAuthor" class="review-input" placeholder="Имя" required>
                     <textarea id="reviewText" class="review-textarea" placeholder="Ваш отзыв" required></textarea>
                     
-                    <div id="profanityError" class="profanity-error-msg">⚠️ Запрещены маты, ругательства, оскорбления (в т.ч. упоминания родных, нации, расы и пола)! Пожалуйста, соблюдайте уважение.</div>
+                    <div id="profanityError" class="profanity-error-msg">⚠️ Запрещены маты, ругательства, оскорбления! Пожалуйста, соблюдайте уважение.</div>
 
                     <button type="submit" class="submit-review-btn" id="submitBtn">Оставить отзыв</button>
                 </form>
@@ -501,7 +534,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 Сайт создан DevFlow. Все права защищены.</p>
+            <p>© 2026 Сайт создан DevFlow. Все права защищены.</p>
         </footer>
     </div>
 
@@ -542,7 +575,7 @@
     <div id="favorites-popup" class="cart-popup hidden">
         <div class="cart-popup-header">
             <h3>⭐ Ваши сохраненные заказы</h3>
-            <button id="close-favorites-popup" class="close-popup-btn">&times;</button>
+            <button id="close-favorites-popup" class="close-popup-btn">×</button>
         </div>
         <div style="margin-bottom: 12px; display: flex; gap: 8px;">
             <input type="text" id="fav-name-input" placeholder="Название набора" class="fav-input">
@@ -552,23 +585,17 @@
     </div>
 
     <div id="cart-popup" class="cart-popup hidden">
-
         <div class="cart-popup-header">
             <h3>Состав вашего заказа</h3>
             <div class="cart-header-actions">
-                <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">
-                    ⭐ Сохранить в избранное
-                </button>
-                <button id="close-cart-popup" class="close-popup-btn">&times;</button>
+                <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">⭐ Сохранить в избранное</button>
+                <button id="close-cart-popup" class="close-popup-btn">×</button>
             </div>
         </div>
-
-        <!-- Блок ввода названия набора (изначально скрыт, появляется ПОД шапкой, над списком товаров) -->
         <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
             <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
             <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
         </div>
-
         <div id="cart-popup-items" class="cart-popup-items"></div>
     </div>
 
@@ -576,9 +603,7 @@
         <div class="order-bar-content">
             <div id="order-bar-toggle" class="order-info">
                 <div class="order-title-row">
-                    <span class="order-heading">
-                        ЗАКАЗ <span class="order-edit-hint">(изменить)</span>
-                    </span>
+                    <span class="order-heading">ЗАКАЗ <span class="order-edit-hint">(изменить)</span></span>
                     <span class="order-total">Итого: <strong id="bar-total-price">0 ₸</strong></span>
                 </div>
                 <div id="bar-items-text" class="order-items-preview">пусто</div>
@@ -593,68 +618,159 @@
     <script src="cart.js"></script>
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxwvYlOqMA2VQ9zXrx0mYk5KwyPz2HqtLRe7WJEyM4LirjxuxOJCoSmKNlUut_HS6PWeQ/exec";
-
-        // ============================================
-        // УНИКАЛЬНЫЙ ID САЙТА — не меняй без причины!
-        // ============================================
         const SITE_UNIQUE_ID = 'honey_prod_2026';
-
-        // Уникальные ключи localStorage для этого сайта
         const LS_REVIEW_AUTHOR_KEY = `${SITE_UNIQUE_ID}_my_review_author`;
         const LS_IS_ADMIN_KEY = `${SITE_UNIQUE_ID}_is_admin`;
 
-        // МАКСИМАЛЬНО РАСШИРЕННЫЙ АНТИМАТ ФИЛЬТР (русский, казахский, английский маты, упоминания шешен/родственников и оскорбления)
+        /*
+          ВАЖНО:
+          Из списка убраны все короткие и неоднозначные корни, которые давали ложные срабатывания
+          на обычных словах: хлебушек, хлеб, сукно, бляха, мандарин, жидкость, хачапури, Нигерия,
+          чмок, класс, бастард, фаг, ретардация, петух (птица), шешен (оратор), міс (медь),
+          құрт (червь), арыз (заявление), бале (на балу), итог, амбар, Катынь, мұрын (нос),
+          шошқа (свинья), есек (осёл), пасынок, надан, тезек, маймақ, қаракөс, текпе и т.п.
+
+          Логика проверки:
+          - для слов длиной <= 3 символов — только ТОЧНОЕ совпадение;
+          - для слов длиной >= 4 символов — вхождение подстроки.
+
+          Нормализация (защита от подмены букв):
+          1) латиница → кириллица по визуальному сходству;
+          2) цифры → буквы (0→о, 1→и, 3→з, 4→ч, 5→с, 6→б, 7→т, 8→в, 9→я);
+          3) знаки валют и спецсимволы → буквы:
+             $ → с, ¥ → у, ₸ → у, Ұ → у, Y → у, € → е, £ → е, @ → а,
+             # → ш, ! → и, | → и, I → и, l → и;
+          4) все остальные не-буквенные символы внутри токена удаляются
+             (., - _ + = ~ ^ % & ? / \ ( ) [ ] { } < > " ' ; : , * и т.п.);
+          5) дополнительно проверяется «склеенный» текст без пробелов и разделителей —
+             на случай «х у й», «х-у-й», «х.у.й»; но только для длинных корней (>=4),
+             чтобы не было ложных срабатываний.
+        */
         const badWords = [
-            // Казахские маты, ругательства и грубые оскорбления (включая шешен и производные)
-            'шешен', 'шешең', 'шешенд', 'шешени', 'шешені', 'шеше', 'шешенник', 'шешенго',
-            'қотақ', 'котак', 'қотақбас', 'котакбас', 'қотақбасы', 'құйғақ', 'міс', 'мис', 
-            'текпе', 'сасық', 'сасык', 'сисек', 'амы', 'ам', 'ама', 'қобын', 'кобын', 
-            'жезөкше', 'жезокше', 'қатын', 'катын', 'қаңбақ', 'мұрын', 'есек', 'есеке', 
-            'ит', 'иттің', 'иттин', 'иттер', 'шошқа', 'шошка', 'пасық', 'пасык', 
-            'бәле', 'бале', 'надан', 'тезек', 'маймақ', 'қаракөс', 'құрт', 'арыз',
+            // Казахские явные маты (только однозначные)
+            'қотақ', 'котак', 'қотақбас', 'котакбас', 'қотақбасы',
+            'құйғақ', 'жезөкше', 'жезокше',
+            'сасық', 'сасык', 'сисек',
+            'қобын', 'кобын',
 
-            // Русский мат и грубые сленговые ругательства
-            'хуй', 'хуя', 'хую', 'хуем', 'хуе', 'хуи', 'хуев', 'хуях', 'хуями', 'охуе', 'захуе', 'похуе', 'ныхуя', 'нихуя', 'хуесос', 'хуепл', 'хуеверт', 'уебан', 'уебок',
-            'пизд', 'писд', 'пезд', 'пизда', 'пизды', 'пизде', 'пизду', 'пиздой', 'пиздец', 'пиздеж', 'пиздеть', 'пиздит', 'спиздил', 'отпизди', 'пиздюк', 'пездюк',
-            'еб', 'ебл', 'ебы', 'ебн', 'ебт', 'еба', 'ебе', 'ебу', 'еби', 'ебо', 'ебь', 'ебать', 'ебал', 'ебаный', 'ебану', 'ебнуть', 'ебнулся', 'выеб', 'заеб', 'поеб', 'наеб', 'уеб', 'перееб',
-            'бля', 'блять', 'блядь', 'бляд', 'блядина', 'бляду', 'блядо', 'блядск', 'бляди',
-            'сук', 'сука', 'суки', 'суку', 'сучка', 'сучкам', 'сучками',
+            // Русские корни и формы (только явные маты)
+            'хуй', 'хуя', 'хую', 'хуем', 'хуе', 'хуев', 'хуях', 'хуями',
+            'хуйн', 'хуйня', 'хуйню',
+            'охуе', 'захуе', 'похуе', 'ныхуя', 'нихуя',
+            'хуесос', 'хуепл', 'хуеверт', 'уебан', 'уебок',
+            'хует', 'хуёв',
+
+            'пизд', 'писд', 'пезд',
+            'пизда', 'пизды', 'пизде', 'пизду', 'пиздой',
+            'пиздец', 'пиздеж', 'пиздеть', 'пиздит',
+            'спиздил', 'отпизди', 'пиздюк', 'пездюк',
+
+            'ебать', 'ебал', 'ебаный', 'ебану', 'ебнуть', 'ебнулся',
+            'выеб', 'заеб', 'поеб', 'наеб', 'уеб', 'перееб',
+
+            'блять', 'блядь', 'бляд', 'блядина', 'бляду', 'блядо', 'блядск', 'бляди',
+
+            'сука', 'суки', 'суку', 'сучка', 'сучкам', 'сучками',
+
             'мраз', 'мразот', 'мрази', 'мразь',
-            'шлюх', 'шлюха', 'шлюхи', 'шлюшку',
-            'гондон', 'гандон', 'гондоны', 'гандоны',
-            'мудак', 'мудила', 'мудило', 'муди',
-            'дерьм', 'дерьмо', 'дерьме', 'дерьмом', 'говн', 'говно', 'говна', 'говну', 'говне', 'говном', 'говен',
-            'сран', 'срать', 'срань', 'срал', 'серут', 'посрал',
-            'чмо', 'чмыр', 'чмошник',
-            'пидор', 'пидар', 'педик', 'пидорас', 'пидарас', 'петух', 'петухи',
-            'залуп', 'залупа', 'манда', 'мудо', 'елда', 'елдын', 'дроч', 'дрочить', 'дрочил', 'задрот',
-            
-            // Английские маты и оскорбления (включая сокращения)
-            'fuck', 'fuk', 'fcking', 'fucker', 'motherfucker', 'shit', 'sht', 'shitty', 'bitch', 'btch', 'bastard', 'asshole', 'ass', 'dick', 'cock', 'pussy', 'whore', 'slut', 'cunt', 'crap', 'idiot', 'retard', 'nigga', 'nigger', 'fag', 'faggot',
 
-            // Расовые, половые, нацистские и гендерные оскорбления
-            'хач', 'чурка', 'жид', 'ниггер', 'нигер', 'узкоглаз', 'черножоп', 'косоглаз', 'пидорс', 'трансфо', 'фашист', 'нацист', 'нацик', 'педофил', 'педо'
+            'шлюх', 'шлюха', 'шлюхи', 'шлюшку',
+
+            'гондон', 'гандон', 'гондоны', 'гандоны',
+
+            'мудак', 'мудила', 'мудило', 'муди',
+
+            'дерьм', 'дерьмо', 'дерьме', 'дерьмом',
+            'говн', 'говно', 'говна', 'говну', 'говне', 'говном', 'говен', 'гавно', 'гавна',
+
+            'сран', 'срать', 'срань', 'срал', 'серут', 'посрал',
+
+            'чмыр', 'чмошник',
+
+            'пидор', 'пидар', 'педик', 'пидорас', 'пидарас',
+
+            'залуп', 'залупа',
+            'мудо', 'елда', 'елдын',
+            'дроч', 'дрочить', 'дрочил', 'задрот',
+
+            // Английские маты (латиница)
+            'fuck', 'fuk', 'fcking', 'fucker', 'motherfucker',
+            'shit', 'sht', 'shitty',
+            'bitch', 'btch',
+            'asshole',
+            'dick', 'cock',
+            'whore', 'slut', 'cunt',
+            'nigga', 'nigger',
+            'faggot',
+
+            // Оскорбления/ксенофобия (только однозначные)
+            'чурка',
+            'ниггер',
+            'узкоглаз', 'черножоп', 'косоглаз',
+            'пидорс',
+            'фашист', 'нацист', 'нацик',
+            'педофил'
         ];
+
+        function normalizeText(text) {
+            if (!text) return '';
+            return String(text).toLowerCase()
+                // латиница → кириллица
+                .replace(/a/g, 'а').replace(/b/g, 'в').replace(/c/g, 'с').replace(/d/g, 'д')
+                .replace(/e/g, 'е').replace(/f/g, 'ф').replace(/g/g, 'г').replace(/h/g, 'н')
+                .replace(/i/g, 'и').replace(/j/g, 'й').replace(/k/g, 'к').replace(/l/g, 'л')
+                .replace(/m/g, 'м').replace(/n/g, 'п').replace(/o/g, 'о').replace(/p/g, 'р')
+                .replace(/q/g, 'к').replace(/r/g, 'р').replace(/s/g, 'с').replace(/t/g, 'т')
+                .replace(/u/g, 'у').replace(/v/g, 'в').replace(/w/g, 'в').replace(/x/g, 'х')
+                .replace(/y/g, 'у').replace(/z/g, 'з')
+                // знаки валют и похожие символы → буквы
+                .replace(/\$/g, 'с')
+                .replace(/[¥₸Ұ]/g, 'у')
+                .replace(/[€£]/g, 'е')
+                .replace(/@/g, 'а')
+                .replace(/#/g, 'ш')
+                .replace(/[!|]/g, 'и')
+                // цифры → буквы
+                .replace(/0/g, 'о').replace(/1/g, 'и').replace(/3/g, 'з').replace(/4/g, 'ч')
+                .replace(/5/g, 'с').replace(/6/g, 'б').replace(/7/g, 'т').replace(/8/g, 'в').replace(/9/g, 'я')
+                // ё → е
+                .replace(/ё/g, 'е');
+        }
+
+        function stripNonLetters(text) {
+            if (!text) return '';
+            return String(text).replace(/[^a-zа-яёқғңөұүһіә]/g, '');
+        }
 
         function containsBadWords(text) {
             if (!text) return false;
-            let clean = text.toLowerCase()
-                .replace(/a/g, 'а').replace(/e/g, 'е').replace(/o/g, 'о').replace(/p/g, 'р')
-                .replace(/c/g, 'с').replace(/y/g, 'у').replace(/x/g, 'х').replace(/i/g, 'и')
-                .replace(/3/g, 'з').replace(/0/g, 'о').replace(/1/g, 'и');
 
-            let words = clean.match(/[a-zа-яёқғңөұүһіә]+/g);
-            if (!words) return false;
+            const normalized = normalizeText(text);
 
-            for (let w of words) {
-                for (let bw of badWords) {
-                    if (w.includes(bw) || bw.includes(w)) {
-                        if (w === bw || (w.length >= 3 && bw.length >= 3 && (w.startsWith(bw) || w.endsWith(bw) || w.includes(bw)))) {
-                            return true;
+            // 1) проверка по отдельным словам
+            let words = normalized.match(/[a-zа-яёқғңөұүһіә]+/g);
+            if (words) {
+                for (let rawWord of words) {
+                    let w = stripNonLetters(rawWord);
+                    if (!w) continue;
+                    for (let bw of badWords) {
+                        if (bw.length <= 3) {
+                            if (w === bw) return true;
+                        } else {
+                            if (w.includes(bw)) return true;
                         }
                     }
                 }
             }
+
+            // 2) проверка «склеенного» текста без пробелов и разделителей
+            let glued = normalized.replace(/[^a-zа-яёқғңөұүһіә]/g, '');
+            if (glued) {
+                for (let bw of badWords) {
+                    if (bw.length >= 4 && glued.includes(bw)) return true;
+                }
+            }
+
             return false;
         }
 
@@ -695,15 +811,31 @@
             });
         });
 
+        // ИСПРАВЛЕНИЕ: AbortController с таймаутом 10 секунд и обработка сбоя в fetchReviews
         async function fetchReviews() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
             try {
-                const response = await fetch(`${WEB_APP_URL}?action=get`);
+                const response = await fetch(`${WEB_APP_URL}?action=get`, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await response.json();
                 return Array.isArray(data) ? data : [];
             } catch (error) {
+                clearTimeout(timeoutId);
                 console.error("Ошибка загрузки отзывов:", error);
-                return [];
+                showStatusMessage("Не удалось загрузить отзывы. Обновите страницу.", "error");
+                return null;
             }
+        }
+
+        function showStatusMessage(text, type) {
+            const container = document.getElementById('reviewsStatusContainer');
+            container.innerHTML = `
+                <div class="reviews-status-message ${type}">
+                    <span>${text}</span>
+                    <button class="close-status-btn" onclick="this.parentElement.remove()">×</button>
+                </div>
+            `;
         }
 
         async function renderReviews() {
@@ -712,6 +844,11 @@
             const summaryCount = document.getElementById('summaryCount');
             
             const reviews = await fetchReviews();
+            if (reviews === null) {
+                list.innerHTML = '<div class="no-reviews-msg">Ошибка загрузки отзывов.</div>';
+                return;
+            }
+
             const isAdmin = localStorage.getItem(LS_IS_ADMIN_KEY) === 'true';
             const currentAuthor = localStorage.getItem(LS_REVIEW_AUTHOR_KEY) || '';
 
@@ -742,12 +879,12 @@
                 if (isAdmin) {
                     actionsHtml += `
                         <button class="action-btn reply-admin-btn" onclick="openAdminReplyModal('${rev.rowId}')">Ответить</button>
-                        <button class="action-btn delete-btn" onclick="removeReview('${rev.rowId}', true)">Удалить</button>
+                        <button class="action-btn delete-btn" onclick="removeReview('${rev.rowId}')">Удалить</button>
                     `;
                 } else if (isMyReview) {
                     actionsHtml += `
                         <button class="action-btn edit-btn" onclick="openEditModal('${rev.rowId}', '${escapeAttr(rev.author)}', '${escapeAttr(rev.text)}', ${rev.rating || 5})">Редактировать</button>
-                        <button class="action-btn delete-btn" onclick="removeReview('${rev.rowId}', false)">Удалить</button>
+                        <button class="action-btn delete-btn" onclick="removeReview('${rev.rowId}')">Удалить</button>
                     `;
                 }
 
@@ -760,9 +897,7 @@
                     adminReplyHtml = `
                         <div class="playmarket-reply-box">
                             <div class="playmarket-reply-header">
-                                <span class="playmarket-reply-author">
-                                    Пасека «Натуральный мёд»
-                                </span>
+                                <span class="playmarket-reply-author">Пасека «Натуральный мёд»</span>
                             </div>
                             <div class="playmarket-reply-text">${escapeHtml(rev.adminReply)}</div>
                         </div>
@@ -794,13 +929,14 @@
 
         function escapeHtml(text) {
             if (!text) return '';
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
             return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
+        // ИСПРАВЛЕНИЕ escapeAttr: экранирование обратного слэша ПЕРВЫМ
         function escapeAttr(text) {
             if (!text) return '';
-            return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            return String(text).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
         const form = document.getElementById('reviewForm');
@@ -815,10 +951,9 @@
 
             if (!authorInput || !textInput) return;
 
-            // Проверка пароля администратора через имя и текст отзыва
             if (authorInput.toLowerCase() === 'admin' && textInput === 'honey123') {
                 localStorage.setItem(LS_IS_ADMIN_KEY, 'true');
-                alert('Режим администратора успешно активирован на этом устройстве!');
+                showStatusMessage('Режим администратора успешно активирован на этом устройстве!', 'success');
                 form.reset();
                 ratingInput.value = 5;
                 updateStars(5, stars);
@@ -832,8 +967,6 @@
             } else {
                 profanityErrorBox.style.display = 'none';
             }
-
-            localStorage.setItem(LS_REVIEW_AUTHOR_KEY, authorInput);
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
@@ -855,10 +988,15 @@
 
                 if (result.status === 'admin_success') {
                     localStorage.setItem(LS_IS_ADMIN_KEY, 'true');
-                    alert('Режим администратора успешно активирован на этом устройстве!');
+                    showStatusMessage('Режим администратора успешно активирован!', 'success');
                 } else if (result.status === 'success') {
-                    alert('Отзыв отправлен! Если он не появился сразу, пожалуйста, обновите страницу.');
+                    showStatusMessage('✅ Отзыв опубликован. Если отзыв не появился — обновите страницу', 'success');
+                } else {
+                    showStatusMessage('Если отзыв не появился — обновите страницу', 'error');
                 }
+
+                // ИСПРАВЛЕНИЕ: сохранение имени в localStorage ПОСЛЕ успешной отправки
+                localStorage.setItem(LS_REVIEW_AUTHOR_KEY, authorInput);
 
                 form.reset();
                 document.getElementById('reviewAuthor').value = authorInput;
@@ -869,14 +1007,15 @@
                 await renderReviews();
             } catch (error) {
                 console.error('Ошибка отправки:', error);
-                alert('Отзыв отправлен. Если он не появился, пожалуйста, обновите страницу.');
+                showStatusMessage('Если отзыв не появился — обновите страницу', 'error');
                 await renderReviews();
             } finally {
                 submitBtn.disabled = false;
             }
         });
 
-        window.removeReview = async function(rowId, isAdminAction) {
+        // ИСПРАВЛЕНИЕ: убран лишний мёртвый параметр isAdminAction
+        window.removeReview = async function(rowId) {
             if (confirm('Вы уверены, что хотите удалить этот отзыв?')) {
                 const isAdmin = localStorage.getItem(LS_IS_ADMIN_KEY) === 'true';
                 const adminMarker = isAdmin ? 'honey123' : '';
@@ -895,13 +1034,13 @@
                     });
                     const result = await response.json();
                     if (result.status === 'success') {
-                        alert('Отзыв успешно удален.');
+                        showStatusMessage('Отзыв успешно удален.', 'success');
                         await renderReviews();
                     } else {
-                        alert(result.message || 'Ошибка удаления');
+                        showStatusMessage(result.message || 'Ошибка удаления', 'error');
                     }
                 } catch (e) {
-                    alert('Ошибка соединения. Обновите страницу и попробуйте снова.');
+                    showStatusMessage('Ошибка соединения. Обновите страницу.', 'error');
                 }
             }
         };
@@ -943,13 +1082,13 @@
             const modalErr = document.getElementById('modalProfanityError');
 
             if (!textVal) {
-                alert('Поле текста не может быть пустым!');
+                showStatusMessage('Поле текста не может быть пустым!', 'error');
                 return;
             }
 
             if (mode === 'edit') {
                 if (!newAuthorVal) {
-                    alert('Имя автора не может быть пустым!');
+                    showStatusMessage('Имя автора не может быть пустым!', 'error');
                     return;
                 }
                 if (containsBadWords(newAuthorVal) || containsBadWords(textVal)) {
@@ -989,14 +1128,14 @@
                 });
                 const result = await response.json();
                 if (result.status === 'success') {
-                    alert('Изменения успешно сохранены! Обновите страницу, если они не отобразились.');
+                    showStatusMessage('Изменения успешно сохранены!', 'success');
                     document.getElementById('adminModal').classList.remove('active');
                     await renderReviews();
                 } else {
-                    alert(result.message || 'Ошибка выполнения операции');
+                    showStatusMessage(result.message || 'Ошибка выполнения операции', 'error');
                 }
             } catch (e) {
-                alert('Ошибка соединения. Обновите страницу.');
+                showStatusMessage('Ошибка соединения. Обновите страницу.', 'error');
                 await renderReviews();
             }
         });

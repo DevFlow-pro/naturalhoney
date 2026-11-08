@@ -1,18 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ============================================
-    // УНИКАЛЬНЫЙ ID САЙТА — не меняй без причины!
-    // ============================================
     const SITE_UNIQUE_ID = 'honey_prod_2026';
 
     const STORAGE_KEY = `${SITE_UNIQUE_ID}_cart_v1`;
     const FAV_STORAGE_KEY = `${SITE_UNIQUE_ID}_favs_v1`;
+    const SAVED_TABLE_KEY = `${SITE_UNIQUE_ID}_saved_table`;
+    const SAVED_TABLE_TIME_KEY = `${SITE_UNIQUE_ID}_saved_table_time`;
 
     const WHATSAPP_NUMBER = '77002623400';
 
     let cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     let favorites = JSON.parse(localStorage.getItem(FAV_STORAGE_KEY)) || [];
 
+    // Логика столов из QR
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableFromUrl = urlParams.get('table');
+    let selectedTable = null;
+
+    if (tableFromUrl) {
+        localStorage.setItem(SAVED_TABLE_KEY, tableFromUrl);
+        localStorage.setItem(SAVED_TABLE_TIME_KEY, Date.now().toString());
+        selectedTable = tableFromUrl;
+    } else {
+        const savedTable = localStorage.getItem(SAVED_TABLE_KEY);
+        const savedTime = parseInt(localStorage.getItem(SAVED_TABLE_TIME_KEY) || '0', 10);
+        if (savedTable && (Date.now() - savedTime < 172800000)) {
+            selectedTable = savedTable;
+        } else {
+            localStorage.removeItem(SAVED_TABLE_KEY);
+            localStorage.removeItem(SAVED_TABLE_TIME_KEY);
+        }
+    }
 
     const cards = document.querySelectorAll('.info-card[data-id]');
 
@@ -35,16 +53,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveCurrentFavBtn = document.getElementById('save-current-fav-btn');
     const favBadge = document.getElementById('fav-badge');
 
-    // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ СОХРАНЕНИЯ В ИЗБРАННОЕ ИЗ КОРЗИНЫ
     const openSaveFavPanelBtn = document.getElementById('open-save-fav-panel-btn');
     const saveFavInputPanel = document.getElementById('save-fav-input-panel');
     const saveFavNameInput = document.getElementById('save-fav-name-input');
     const confirmSaveFavBtn = document.getElementById('confirm-save-fav-btn');
 
+    // Кнопка "Наверх" и логика её позиции
+    const toTopBtn = document.getElementById('toTopBtn');
 
-    // ============================================
-    // МОДАЛЬНОЕ ОКНО ПРОВЕРКИ ЗАКАЗА
-    // ============================================
+    function updateToTopPosition() {
+        if (!toTopBtn) return;
+        const isFavActive = favoritesPopup && favoritesPopup.classList.contains('active');
+        const isCartActive = cartPopup && cartPopup.classList.contains('active');
+        if (window.innerWidth <= 767 && (isFavActive || isCartActive)) {
+            toTopBtn.style.bottom = '200px';
+        } else {
+            toTopBtn.style.bottom = '';
+        }
+    }
+
+    if (toTopBtn) {
+        window.addEventListener('scroll', () => {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                toTopBtn.classList.add('visible');
+            } else {
+                toTopBtn.classList.remove('visible');
+            }
+        });
+        toTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    window.addEventListener('resize', updateToTopPosition);
+
+    // Модальное окно проверки заказа
     const orderConfirmModal = document.createElement('div');
     orderConfirmModal.id = 'order-confirm-modal';
     orderConfirmModal.className = 'cart-popup';
@@ -52,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     orderConfirmModal.innerHTML = `
         <div class="cart-popup-header">
             <h3>Детали заказа</h3>
-            <button id="close-confirm-modal" class="close-popup-btn">&times;</button>
+            <button id="close-confirm-modal" class="close-popup-btn">×</button>
         </div>
         <p style="font-size: 13px; color: #78716c; margin-bottom: 12px;">Проверьте ваш заказ, при необходимости измените количество или сохраните в избранное:</p>
         <div id="confirm-modal-items" class="cart-popup-items" style="margin-bottom: 15px;"></div>
@@ -72,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.body.appendChild(orderConfirmModal);
 
-    // Создание подложки для затемнения фона (backdrop)
     const modalBackdrop = document.createElement('div');
     modalBackdrop.id = 'modal-backdrop';
     modalBackdrop.style.cssText = `
@@ -93,57 +135,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmModalFavNameInput = document.getElementById('confirm-modal-fav-name-input');
     const confirmModalSaveFavBtn = document.getElementById('confirm-modal-save-fav-btn');
 
-
+    // Универсальный formatWeight
     function formatWeight(weight) {
-        return weight === '1.5'
-            ? '1,5 кг'
-            : `${weight} кг`;
+        return String(weight).replace('.', ',') + ' кг';
     }
-
 
     function getCartKey(id, weight) {
         return `${id}_${weight}`;
     }
 
-
     function getCartItems() {
         const items = [];
-
         cards.forEach(card => {
             const id = card.dataset.id;
             const name = card.dataset.name;
-
             const weightOptions = card.querySelectorAll('.weight-option');
 
             weightOptions.forEach(option => {
                 const weight = option.dataset.weight;
                 const price = parseInt(option.dataset.price);
-
                 const key = getCartKey(id, weight);
                 const qty = cart[key] || 0;
 
                 if (qty > 0) {
-                    items.push({
-                        id,
-                        name,
-                        weight,
-                        price,
-                        qty,
-                        key
-                    });
+                    items.push({ id, name, weight, price, qty, key });
                 }
             });
         });
-
         return items;
     }
 
-
     function updateUI() {
-
         let totalSum = 0;
         let totalCount = 0;
-
         let itemsSummaryArray = [];
         let popupHtml = '';
 
@@ -156,114 +180,67 @@ document.addEventListener('DOMContentLoaded', () => {
                 const key = getCartKey(id, weight);
                 const qty = cart[key] || 0;
                 const countSpan = option.querySelector('.cnt-value');
-
-                if (countSpan) {
-                    countSpan.textContent = qty;
-                }
+                if (countSpan) countSpan.textContent = qty;
             });
         });
 
-
         getCartItems().forEach(item => {
             const itemSum = item.price * item.qty;
-
             totalSum += itemSum;
             totalCount += item.qty;
 
-            itemsSummaryArray.push(
-                `${item.name} — ${formatWeight(item.weight)} x${item.qty}`
-            );
+            itemsSummaryArray.push(`${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
 
             popupHtml += `
                 <div class="popup-item-row">
                     <div class="popup-item-info">
-                        <span class="popup-item-name">
-                            ${item.name}
-                        </span>
+                        <span class="popup-item-name">${item.name}</span>
                         <span class="popup-item-price">
-                            ${formatWeight(item.weight)}
-                            — ${item.price} ₸ × ${item.qty}
-                            =
-                            <strong>${itemSum} ₸</strong>
+                            ${formatWeight(item.weight)} — ${item.price} ₸ × ${item.qty} = <strong>${itemSum} ₸</strong>
                         </span>
                     </div>
                     <div class="popup-item-controls">
                         <div class="counter-box">
-                            <button
-                                class="cnt-btn popup-minus"
-                                data-key="${item.key}"
-                            >
-                                -
-                            </button>
-                            <span class="cnt-value">
-                                ${item.qty}
-                            </span>
-                            <button
-                                class="cnt-btn popup-plus"
-                                data-key="${item.key}"
-                            >
-                                +
-                            </button>
+                            <button class="cnt-btn popup-minus" data-key="${item.key}">-</button>
+                            <span class="cnt-value">${item.qty}</span>
+                            <button class="cnt-btn popup-plus" data-key="${item.key}">+</button>
                         </div>
                     </div>
                 </div>
             `;
         });
 
-
         if (cartPopupItems) {
-            cartPopupItems.innerHTML =
-                popupHtml ||
-                '<p style="text-align:center; color:#78716c; padding:10px;">Корзина пуста</p>';
-
+            cartPopupItems.innerHTML = popupHtml || '<p style="text-align:center; color:#78716c; padding:10px;">Корзина пуста</p>';
             attachPopupListeners();
         }
-
 
         if (barTotalPrice) {
             barTotalPrice.textContent = totalSum + ' ₸';
         }
 
-
         if (totalCount > 0) {
-            if (barItemsText) {
-                barItemsText.textContent = itemsSummaryArray.join(', ');
-            }
-            if (orderBar) {
-                orderBar.classList.remove('hidden');
-            }
+            if (barItemsText) barItemsText.textContent = itemsSummaryArray.join(', ');
+            if (orderBar) orderBar.classList.remove('hidden');
         } else {
-            if (orderBar) {
-                orderBar.classList.add('hidden');
-            }
-            if (cartPopup) {
-                cartPopup.classList.remove('active');
-            }
-            // Скрываем панель сохранения при пустой корзине
-            if (saveFavInputPanel) {
-                saveFavInputPanel.classList.add('hidden');
-            }
+            if (orderBar) orderBar.classList.add('hidden');
+            if (cartPopup) cartPopup.classList.remove('active');
+            if (saveFavInputPanel) saveFavInputPanel.classList.add('hidden');
             closeOrderConfirmModal();
         }
 
-
         updateFavoritesUI();
+        updateToTopPosition();
 
         if (orderConfirmModal.classList.contains('active')) {
             updateConfirmModalContent();
         }
 
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(cart)
-        );
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
     }
 
-
     function updateFavoritesUI() {
-
         if (!favBadge) return;
-
         if (favorites.length > 0) {
             favBadge.textContent = favorites.length;
             favBadge.classList.remove('hidden');
@@ -271,11 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             favBadge.classList.add('hidden');
         }
 
-
         if (favoritesPopupItems) {
-
             let html = '';
-
             if (favorites.length === 0) {
                 html = '<p style="text-align:center; color:#78716c; padding:10px;">Нет сохраненных заказов</p>';
             } else {
@@ -283,38 +257,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     html += `
                         <div class="fav-item-row">
                             <div class="fav-item-info">
-                                <span class="fav-item-name">
-                                    ${fav.name}
-                                </span>
-                                <span class="fav-item-desc">
-                                    ${fav.summary}
-                                    (${fav.total} ₸)
-                                </span>
+                                <span class="fav-item-name">${fav.name}</span>
+                                <span class="fav-item-desc">${fav.summary} (${fav.total} ₸)</span>
                             </div>
                             <div class="fav-actions">
-                                <button
-                                    class="fav-load-btn"
-                                    data-index="${index}"
-                                >
-                                    Выбрать
-                                </button>
-                                <button
-                                    class="fav-del-btn"
-                                    data-index="${index}"
-                                >
-                                    ✕
-                                </button>
+                                <button class="fav-load-btn" data-index="${index}">Выбрать</button>
+                                <button class="fav-del-btn" data-index="${index}">✕</button>
                             </div>
                         </div>
                     `;
                 });
             }
-
             favoritesPopupItems.innerHTML = html;
             attachFavoritesListeners();
         }
     }
-
 
     cards.forEach(card => {
         const id = card.dataset.id;
@@ -323,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
         weightOptions.forEach(option => {
             const weight = option.dataset.weight;
             const key = getCartKey(id, weight);
-
             const plusBtn = option.querySelector('.plus');
             const minusBtn = option.querySelector('.minus');
 
@@ -338,9 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 minusBtn.addEventListener('click', () => {
                     if (cart[key] > 0) {
                         cart[key]--;
-                        if (cart[key] === 0) {
-                            delete cart[key];
-                        }
+                        if (cart[key] === 0) delete cart[key];
                         updateUI();
                     }
                 });
@@ -348,39 +302,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
     function attachPopupListeners() {
         if (!cartPopupItems) return;
-
-        const popupPlusBtns = cartPopupItems.querySelectorAll('.popup-plus');
-        const popupMinusBtns = cartPopupItems.querySelectorAll('.popup-minus');
-
-        popupPlusBtns.forEach(btn => {
+        cartPopupItems.querySelectorAll('.popup-plus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
                 cart[key] = (cart[key] || 0) + 1;
                 updateUI();
             });
         });
-
-        popupMinusBtns.forEach(btn => {
+        cartPopupItems.querySelectorAll('.popup-minus').forEach(btn => {
             btn.addEventListener('click', () => {
                 const key = btn.dataset.key;
                 if (cart[key] > 0) {
                     cart[key]--;
-                    if (cart[key] === 0) {
-                        delete cart[key];
-                    }
+                    if (cart[key] === 0) delete cart[key];
                     updateUI();
                 }
             });
         });
     }
 
-
-    // ============================================
-    // МОДАЛЬНОЕ ОКНО ПРОВЕРКИ ЗАКАЗА
-    // ============================================
     function openOrderConfirmModal() {
         const cartItems = getCartItems();
         if (cartItems.length === 0) {
@@ -393,11 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateConfirmModalContent();
         modalBackdrop.style.display = 'block';
         orderConfirmModal.classList.add('active');
+        updateToTopPosition();
     }
 
     function closeOrderConfirmModal() {
         orderConfirmModal.classList.remove('active');
         modalBackdrop.style.display = 'none';
+        updateToTopPosition();
     }
 
     function updateConfirmModalContent() {
@@ -417,9 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="popup-item-row">
                     <div class="popup-item-info">
                         <span class="popup-item-name">${item.name}</span>
-                        <span class="popup-item-price">
-                            ${formatWeight(item.weight)} — ${item.price} ₸ × ${item.qty} = <strong>${itemSum} ₸</strong>
-                        </span>
+                        <span class="popup-item-price">${formatWeight(item.weight)} — ${item.price} ₸ × ${item.qty} = <strong>${itemSum} ₸</strong></span>
                     </div>
                     <div class="popup-item-controls">
                         <div class="counter-box">
@@ -455,14 +397,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     if (closeConfirmModalBtn) {
         closeConfirmModalBtn.addEventListener('click', closeOrderConfirmModal);
     }
     modalBackdrop.addEventListener('click', closeOrderConfirmModal);
 
-
-    // Сохранение в избранное из модального окна проверки заказа
     if (confirmModalSaveFavBtn) {
         confirmModalSaveFavBtn.addEventListener('click', () => {
             const cartItems = getCartItems();
@@ -470,12 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Корзина пуста!');
                 return;
             }
-
-            let customName = confirmModalFavNameInput.value.trim();
-            if (!customName) {
-                customName = `Набор #${favorites.length + 1}`;
-            }
-
+            let customName = confirmModalFavNameInput.value.trim() || `Набор #${favorites.length + 1}`;
             const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
             const summaryArr = cartItems.map(item => `${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
 
@@ -493,14 +427,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     function attachFavoritesListeners() {
         if (!favoritesPopupItems) return;
-
-        const loadBtns = favoritesPopupItems.querySelectorAll('.fav-load-btn');
-        const delBtns = favoritesPopupItems.querySelectorAll('.fav-del-btn');
-
-        loadBtns.forEach(btn => {
+        favoritesPopupItems.querySelectorAll('.fav-load-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = btn.dataset.index;
                 cart = { ...favorites[index].cartData };
@@ -508,91 +437,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUI();
             });
         });
-
-        delBtns.forEach(btn => {
+        favoritesPopupItems.querySelectorAll('.fav-del-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const index = btn.dataset.index;
                 favorites.splice(index, 1);
-                localStorage.setItem(
-                    FAV_STORAGE_KEY,
-                    JSON.stringify(favorites)
-                );
+                localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(favorites));
                 updateFavoritesUI();
             });
         });
     }
 
-
     if (orderBarToggle && cartPopup) {
         orderBarToggle.addEventListener('click', () => {
-            if (favoritesPopup) {
-                favoritesPopup.classList.remove('active');
-            }
+            if (favoritesPopup) favoritesPopup.classList.remove('active');
             cartPopup.classList.toggle('active');
-
-            // Скрываем панель сохранения при закрытии корзины
             if (!cartPopup.classList.contains('active') && saveFavInputPanel) {
                 saveFavInputPanel.classList.add('hidden');
             }
+            updateToTopPosition();
         });
     }
-
 
     if (closePopupBtn && cartPopup) {
         closePopupBtn.addEventListener('click', () => {
             cartPopup.classList.remove('active');
-            if (saveFavInputPanel) {
-                saveFavInputPanel.classList.add('hidden');
-            }
+            if (saveFavInputPanel) saveFavInputPanel.classList.add('hidden');
+            updateToTopPosition();
         });
     }
-
 
     if (favoritesToggleBtn && favoritesPopup) {
         favoritesToggleBtn.addEventListener('click', () => {
-            if (cartPopup) {
-                cartPopup.classList.remove('active');
-            }
+            if (cartPopup) cartPopup.classList.remove('active');
             favoritesPopup.classList.toggle('active');
+            updateToTopPosition();
         });
     }
-
 
     if (closeFavoritesPopup && favoritesPopup) {
         closeFavoritesPopup.addEventListener('click', () => {
             favoritesPopup.classList.remove('active');
+            updateToTopPosition();
         });
     }
 
-
     if (saveCurrentFavBtn) {
         saveCurrentFavBtn.addEventListener('click', () => {
-            const totalCount = getCartItems().reduce(
-                (sum, item) => sum + item.qty,
-                0
-            );
-
+            const totalCount = getCartItems().reduce((sum, item) => sum + item.qty, 0);
             if (totalCount === 0) {
                 alert('Корзина пуста, нечего сохранять!');
                 return;
             }
-
-            let customName = favNameInput.value.trim();
-
-            if (!customName) {
-                customName = `Набор #${favorites.length + 1}`;
-            }
-
+            let customName = favNameInput.value.trim() || `Набор #${favorites.length + 1}`;
             const cartItems = getCartItems();
-
-            const totalSum = cartItems.reduce(
-                (sum, item) => sum + item.price * item.qty,
-                0
-            );
-
-            const summaryArr = cartItems.map(item =>
-                `${item.name} — ${formatWeight(item.weight)} x${item.qty}`
-            );
+            const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const summaryArr = cartItems.map(item => `${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
 
             favorites.push({
                 name: customName,
@@ -601,20 +500,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 cartData: { ...cart }
             });
 
-            localStorage.setItem(
-                FAV_STORAGE_KEY,
-                JSON.stringify(favorites)
-            );
-
+            localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(favorites));
             favNameInput.value = '';
             updateFavoritesUI();
-
             alert('Заказ успешно сохранен в избранное! ⭐');
         });
     }
 
-
-    // Итоговая отправка в WhatsApp из модального окна проверки
     if (confirmWhatsappFinalBtn) {
         confirmWhatsappFinalBtn.addEventListener('click', () => {
             const cartItems = getCartItems();
@@ -623,9 +515,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let message = "Здравствуйте! Хочу сделать заказ:\n\n";
-            let totalSum = 0;
+            let message = "Здравствуйте! Хочу сделать заказ:\n";
+            if (selectedTable) {
+                message += `🪑 Стол №${selectedTable}\n`;
+            }
+            message += "\n";
 
+            let totalSum = 0;
             cartItems.forEach(item => {
                 const sum = item.price * item.qty;
                 totalSum += sum;
@@ -642,8 +538,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
-    // Кнопка "Отправить в Ватсап" из нижней панели заказа -> открывает модалку проверки
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -651,10 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
-    // ============================================
-    // СОХРАНЕНИЕ В ИЗБРАННОЕ ПРЯМО ИЗ КОРЗИНЫ (cart-popup)
-    // ============================================
     if (openSaveFavPanelBtn && saveFavInputPanel) {
         openSaveFavPanelBtn.addEventListener('click', () => {
             saveFavInputPanel.classList.toggle('hidden');
@@ -672,11 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let customName = saveFavNameInput.value.trim();
-            if (!customName) {
-                customName = `Набор #${favorites.length + 1}`;
-            }
-
+            let customName = saveFavNameInput.value.trim() || `Набор #${favorites.length + 1}`;
             const totalSum = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
             const summaryArr = cartItems.map(item => `${item.name} — ${formatWeight(item.weight)} x${item.qty}`);
 
@@ -695,9 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     updateUI();
-
 
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');

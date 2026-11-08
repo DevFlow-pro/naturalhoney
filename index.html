@@ -1,347 +1,167 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Натуральный мёд — Главная</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Фиксированный размер фото (уменьшена высота до 650) */
-        .info-card img {
-            width: 100%;
-            aspect-ratio: 600 / 650;
-            object-fit: cover;
-        }
-    </style>
+    <style>.info-card img{width:100%;aspect-ratio:600/650;object-fit:cover;}</style>
 </head>
-
 <body>
-
-    <div class="main-wrapper">
-
-        <header>
-
-            <div class="header-top">
-
-                <div class="header-center-brand">
-                    <span class="header-emoji">🍯</span>
-                    <a href="index.html" class="site-title">Натуральный мёд</a>
-                </div>
-
-                <div class="header-right-action">
-
-                    <div class="fav-btn-wrapper">
-                        <button id="favorites-toggle-btn" class="fav-icon-btn" title="Избранные заказы">
-                            ⭐ <span id="fav-badge" class="fav-badge hidden">0</span>
-                        </button>
-
-                        <span class="fav-label-sub">избранное</span>
-                    </div>
-
-                </div>
-
+<div class="main-wrapper">
+    <header>
+        <div class="header-top">
+            <div class="header-center-brand">
+                <span class="header-emoji">🍯</span>
+                <a href="index.html" class="site-title">Натуральный мёд</a>
             </div>
-
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="active">Мед</a></li>
-                    <li><a href="about.html">Пасека</a></li>
-                    <li><a href="contact.html">Контакты и отзывы</a></li>
-                </ul>
-            </nav>
-
-        </header>
-
-
-        <main>
-
-            <h1 class="page-heading">Наш натуральный мёд</h1>
-
-            <div class="honey-grid">
-
-                <!-- МАЙСКИЙ МЁД -->
-                <article class="info-card" data-id="1" data-name="Майский мёд (Горное разнотравье)">
-
-                    <h3>Майский мёд (Горное разнотравье)</h3>
-
-                    <img src="honey.m.jpeg"
-                         alt="Майский мед">
-
-                    <div class="meta weight-meta">
-
-                        <div class="weight-options">
-
-                            <div class="weight-option"
-                                 data-weight="1"
-                                 data-price="3500">
-
-                                <span class="weight-label">
-                                    1 кг — 3500 ₸
-                                </span>
-
-                                <div class="counter-box">
-                                    <button class="cnt-btn minus" type="button">-</button>
-                                    <span class="cnt-value">0</span>
-                                    <button class="cnt-btn plus" type="button">+</button>
-                                </div>
-
-                            </div>
-
-
-                            <div class="weight-option"
-                                 data-weight="1.5"
-                                 data-price="5000">
-
-                                <span class="weight-label">
-                                    1,5 кг — 5000 ₸
-                                </span>
-
-                                <div class="counter-box">
-                                    <button class="cnt-btn minus" type="button">-</button>
-                                    <span class="cnt-value">0</span>
-                                    <button class="cnt-btn plus" type="button">+</button>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="card-desc-wrapper">
-                        <div class="desc-toggle-btn">
-                            <span>Описание меда</span>
-                            <div class="triangle-icon"></div>
-                        </div>
-                        <p class="expandable-text">
-                            Настоящее жидкое золото, собранное у подножия Тянь-Шаня в районе посёлка Кастек. Качался в июле, благодаря чему набрал яркий тёмно-янтарный цвет и богатый, сладкий вкус. В букете — нектар шалфея, душицы, дикой мяты и зверобоя. Мёд очень жиденький, ароматный и настолько вкусный, что перед ним не устоят даже те, кто обычно к мёду равнодушен. Подробнее о травах — на странице о пасеке!<br><br>
-                            <strong>Вкус:</strong> Насыщенно-сладкий, с тёплыми травяными и чайными нотками.<br>
-                            <strong>Место сбора:</strong> Зелёные предгорья Тянь-Шаня (Кастек).
-                        </p>
-                    </div>
-
-                </article>
-
-
-                <!-- ПОДСОЛНЕЧНЫЙ МЁД -->
-                <article class="info-card" data-id="2" data-name="Подсолнечный мёд (Степное разнотравье)">
-
-                    <h3>Подсолнечный мёд (Степное разнотравье)</h3>
-
-                    <img src="honey.s.jpeg"
-                         alt="Подсолнечный мед">
-
-                    <div class="meta weight-meta">
-
-                        <div class="weight-options">
-
-                            <div class="weight-option"
-                                 data-weight="1"
-                                 data-price="3500">
-
-                                <span class="weight-label">
-                                    1 кг — 3500 ₸
-                                </span>
-
-                                <div class="counter-box">
-                                    <button class="cnt-btn minus" type="button">-</button>
-                                    <span class="cnt-value">0</span>
-                                    <button class="cnt-btn plus" type="button">+</button>
-                                </div>
-
-                            </div>
-
-
-                            <div class="weight-option"
-                                 data-weight="1.5"
-                                 data-price="5000">
-
-                                <span class="weight-label">
-                                    1,5 кг — 5000 ₸
-                                </span>
-
-                                <div class="counter-box">
-                                    <button class="cnt-btn minus" type="button">-</button>
-                                    <span class="cnt-value">0</span>
-                                    <button class="cnt-btn plus" type="button">+</button>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="card-desc-wrapper">
-                        <div class="desc-toggle-btn">
-                            <span>Описание меда</span>
-                            <div class="triangle-icon"></div>
-                        </div>
-                        <p class="expandable-text">
-                            Чистый светлый янтарный мёд, пропитанный щедрым солнцем бесконечных казахстанских степей. Собран на бескрайних полях в районе Сорбулака. Обладает приятной тягучей текстурой, бархатистой сладостью и классическим, знакомым с детства ароматом цветущего подсолнуха. Натуральный источник энергии и тепла, который идеально подходит к чаю или свежему хлебу.<br><br>
-                            <strong>Вкус:</strong> Мягкий, густой, с чистыми солнечными нотами и приятным нежным послевкусием.<br>
-                            <strong>Место сбора:</strong> Заилийская степь (Сорбулак).
-                        </p>
-                    </div>
-
-                </article>
-
-            </div>
-
-        </main>
-
-
-        <footer>
-            <p>&copy; 2026 Сайт создан DevFlow. Все права защищены.</p>
-        </footer>
-
-    </div>
-
-
-    <!-- ИЗБРАННЫЕ ЗАКАЗЫ -->
-    <div id="favorites-popup" class="cart-popup hidden">
-
-        <div class="cart-popup-header">
-
-            <h3>⭐ Ваши сохраненные заказы</h3>
-
-            <button id="close-favorites-popup" class="close-popup-btn">
-                &times;
-            </button>
-
-        </div>
-
-        <div style="margin-bottom: 12px; display: flex; gap: 8px;">
-
-            <input
-                type="text"
-                id="fav-name-input"
-                placeholder="Название набора"
-                class="fav-input"
-            >
-
-            <button id="save-current-fav-btn" class="fav-save-btn">
-                Сохранить текущий
-            </button>
-
-        </div>
-
-        <div id="favorites-popup-items" class="cart-popup-items"></div>
-
-    </div>
-
-
-    <!-- КОРЗИНА -->
-    <div id="cart-popup" class="cart-popup hidden">
-
-        <div class="cart-popup-header">
-
-            <h3>Состав вашего заказа</h3>
-
-            <div class="cart-header-actions">
-
-                <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">
-                    ⭐ Сохранить в избранное
-                </button>
-
-                <button id="close-cart-popup" class="close-popup-btn">
-                    &times;
-                </button>
-
-            </div>
-
-        </div>
-
-        <!-- Блок ввода названия набора (изначально скрыт, появляется ПОД шапкой, над списком товаров) -->
-        <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
-            <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
-            <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
-        </div>
-
-        <div id="cart-popup-items" class="cart-popup-items"></div>
-
-    </div>
-
-
-    <!-- НИЖНЯЯ ПАНЕЛЬ ЗАКАЗА -->
-    <div id="order-bar" class="order-bar hidden">
-
-        <div class="order-bar-content">
-
-            <div id="order-bar-toggle" class="order-info">
-
-                <div class="order-title-row">
-
-                    <span class="order-heading">
-                        ЗАКАЗ
-                        <span class="order-edit-hint">(изменить)</span>
-                    </span>
-
-                    <span class="order-total">
-                        Итого:
-                        <strong id="bar-total-price">0 ₸</strong>
-                    </span>
-
+            <div class="header-right-action">
+                <div class="fav-btn-wrapper">
+                    <button id="favorites-toggle-btn" class="fav-icon-btn" title="Избранные заказы">⭐ <span id="fav-badge" class="fav-badge hidden">0</span></button>
+                    <span class="fav-label-sub">избранное</span>
                 </div>
-
-                <div id="bar-items-text" class="order-items-preview">
-                    пусто
-                </div>
-
             </div>
-
-
-            <button
-                id="whatsapp-send-btn"
-                class="whatsapp-btn"
-                title="Отправить в Ватсап"
-            >
-
-                <span class="wa-text">
-                    в Ватсап
-                </span>
-
-                <span class="wa-icon">
-                    ➔
-                </span>
-
-            </button>
-
         </div>
-
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Мед</a></li>
+                <li><a href="about.html">Пасека</a></li>
+                <li><a href="contact.html">Контакты и отзывы</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1 class="page-heading">Наш натуральный мёд</h1>
+        <div class="honey-grid">
+            <article class="info-card" data-id="1" data-name="Майский мёд (Горное разнотравье)">
+                <h3>Майский мёд (Горное разнотравье)</h3>
+                <img src="honey.m.jpeg" alt="Майский мед">
+                <div class="meta weight-meta">
+                    <div class="weight-options">
+                        <div class="weight-option" data-weight="1" data-price="3500">
+                            <span class="weight-label">1 кг — 3500 ₸</span>
+                            <div class="counter-box">
+                                <button class="cnt-btn minus" type="button">-</button>
+                                <span class="cnt-value">0</span>
+                                <button class="cnt-btn plus" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="weight-option" data-weight="1.5" data-price="5000">
+                            <span class="weight-label">1,5 кг — 5000 ₸</span>
+                            <div class="counter-box">
+                                <button class="cnt-btn minus" type="button">-</button>
+                                <span class="cnt-value">0</span>
+                                <button class="cnt-btn plus" type="button">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-desc-wrapper">
+                    <div class="desc-toggle-btn">
+                        <span>Описание меда</span>
+                        <div class="triangle-icon"></div>
+                    </div>
+                    <p class="expandable-text">
+                        Настоящее жидкое золото, собранное у подножия Тянь-Шаня в районе посёлка Кастек. Качался в июле, благодаря чему набрал яркий тёмно-янтарный цвет и богатый, сладкий вкус. В букете — нектар шалфея, душицы, дикой мяты и зверобоя. Мёд очень жиденький, ароматный и настолько вкусный, что перед ним не устоят даже те, кто обычно к мёду равнодушен. Подробнее о травах — на странице о пасеке!<br><br>
+                        <strong>Вкус:</strong> Насыщенно-сладкий, с тёплыми травяными и чайными нотками.<br>
+                        <strong>Место сбора:</strong> Зелёные предгорья Тянь-Шаня (Кастек).
+                    </p>
+                </div>
+            </article>
+            <article class="info-card" data-id="2" data-name="Подсолнечный мёд (Степное разнотравье)">
+                <h3>Подсолнечный мёд (Степное разнотравье)</h3>
+                <img src="honey.s.jpeg" alt="Подсолнечный мед">
+                <div class="meta weight-meta">
+                    <div class="weight-options">
+                        <div class="weight-option" data-weight="1" data-price="3500">
+                            <span class="weight-label">1 кг — 3500 ₸</span>
+                            <div class="counter-box">
+                                <button class="cnt-btn minus" type="button">-</button>
+                                <span class="cnt-value">0</span>
+                                <button class="cnt-btn plus" type="button">+</button>
+                            </div>
+                        </div>
+                        <div class="weight-option" data-weight="1.5" data-price="5000">
+                            <span class="weight-label">1,5 кг — 5000 ₸</span>
+                            <div class="counter-box">
+                                <button class="cnt-btn minus" type="button">-</button>
+                                <span class="cnt-value">0</span>
+                                <button class="cnt-btn plus" type="button">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-desc-wrapper">
+                    <div class="desc-toggle-btn">
+                        <span>Описание меда</span>
+                        <div class="triangle-icon"></div>
+                    </div>
+                    <p class="expandable-text">
+                        Чистый светлый янтарный мёд, пропитанный щедрым солнцем бесконечных казахстанских степей. Собран на бескрайних полях в районе Сорбулака. Обладает приятной тягучей текстурой, бархатистой сладостью и классическим, знакомым с детства ароматом цветущего подсолнуха. Натуральный источник энергии и тепла, который идеально подходит к чаю или свежему хлебу.<br><br>
+                        <strong>Вкус:</strong> Мягкий, густой, с чистыми солнечными нотами и приятным нежным послевкусием.<br>
+                        <strong>Место сбора:</strong> Заилийская степь (Сорбулака).
+                    </p>
+                </div>
+            </article>
+        </div>
+    </main>
+    <footer>
+        <p>© 2026 Сайт создан DevFlow. Все права защищены.</p>
+    </footer>
+</div>
+<div id="favorites-popup" class="cart-popup hidden">
+    <div class="cart-popup-header">
+        <h3>⭐ Ваши сохраненные заказы</h3>
+        <button id="close-favorites-popup" class="close-popup-btn">×</button>
     </div>
-
-
-    <!-- LIGHTBOX -->
-    <div id="lightbox" class="lightbox-modal">
-
-        <span class="lightbox-close">
-            &times;
-        </span>
-
-        <img
-            class="lightbox-content"
-            id="lightbox-img"
-            alt="Увеличенное фото"
-        >
-
+    <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+        <input type="text" id="fav-name-input" placeholder="Название набора" class="fav-input">
+        <button id="save-current-fav-btn" class="fav-save-btn">Сохранить текущий</button>
     </div>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtns = document.querySelectorAll('.desc-toggle-btn');
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const wrapper = btn.closest('.card-desc-wrapper');
-                    wrapper.classList.toggle('open');
-                });
-            });
+    <div id="favorites-popup-items" class="cart-popup-items"></div>
+</div>
+<div id="cart-popup" class="cart-popup hidden">
+    <div class="cart-popup-header">
+        <h3>Состав вашего заказа</h3>
+        <div class="cart-header-actions">
+            <button id="open-save-fav-panel-btn" class="save-to-fav-btn" title="Сохранить в избранное">⭐ Сохранить в избранное</button>
+            <button id="close-cart-popup" class="close-popup-btn">×</button>
+        </div>
+    </div>
+    <div id="save-fav-input-panel" class="save-fav-input-panel hidden">
+        <input type="text" id="save-fav-name-input" class="fav-input" placeholder="Введите название набора">
+        <button id="confirm-save-fav-btn" class="fav-save-btn">Сохранить</button>
+    </div>
+    <div id="cart-popup-items" class="cart-popup-items"></div>
+</div>
+<div id="order-bar" class="order-bar hidden">
+    <div class="order-bar-content">
+        <div id="order-bar-toggle" class="order-info">
+            <div class="order-title-row">
+                <span class="order-heading">ЗАКАЗ <span class="order-edit-hint">(изменить)</span></span>
+                <span class="order-total">Итого: <strong id="bar-total-price">0 ₸</strong></span>
+            </div>
+            <div id="bar-items-text" class="order-items-preview">пусто</div>
+        </div>
+        <button id="whatsapp-send-btn" class="whatsapp-btn" title="Отправить в Ватсап">
+            <span class="wa-text">в Ватсап</span>
+            <span class="wa-icon">➔</span>
+        </button>
+    </div>
+</div>
+<div id="lightbox" class="lightbox-modal">
+    <span class="lightbox-close">×</span>
+    <img class="lightbox-content" id="lightbox-img" alt="Увеличенное фото">
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.desc-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.card-desc-wrapper').classList.toggle('open');
         });
-    </script>
-    <script src="cart.js"></script>
-
+    });
+});
+</script>
+<script src="cart.js"></script>
 </body>
-
 </html>
